@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+.text-with-outline {
+    background-color: #6302ff;
+    color: #ffffff;           
+    font-weight: bold; 
+    font-size: 1.5rem;         
+    -webkit-text-stroke: 1px  rgb(0, 0, 0);          
+  }
