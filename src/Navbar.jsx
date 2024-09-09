@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IoMdSearch } from 'react-icons/io';
+import { IoMdClose, IoMdSearch } from 'react-icons/io';
 import { IoLanguageSharp } from 'react-icons/io5';
 import { LuShoppingCart } from 'react-icons/lu';
 import { RxAvatar } from 'react-icons/rx';
@@ -22,19 +22,21 @@ const NavBar = () => {
                         <NavLink to={'/jackets'} className='text-2xl font-medium'>Jackets</NavLink>
                     </div>
                     <div className='flex-1 flex items-center justify-center'>
-                        <img className='h-16' src="https://fabyoh.com/_next/image?url=https%3A%2F%2Fapi.fabyoh.com%2Flogos%2Fconverted-994938f9-7af3-4b40-97a1-dfe59593f836.webp&w=1920&q=75" alt="" />
+                        <Link to={'/'}><img className='h-16' src="https://fabyoh.com/_next/image?url=https%3A%2F%2Fapi.fabyoh.com%2Flogos%2Fconverted-994938f9-7af3-4b40-97a1-dfe59593f836.webp&w=1920&q=75" alt="" /></Link>
                     </div>
                     <div className='flex-1  justify-end items-center flex gap-14 '>
-                        <IoMdSearch onClick={handleSearch} className='text-4xl font-bold cursor-pointer' />
-                        <IoLanguageSharp className='text-4xl font-bold' />
-                        <RxAvatar className='text-4xl font-bold' />
-                        <LuShoppingCart className='text-4xl font-bold' />
+                        <IoMdSearch onClick={handleSearch} className='text-2xl font-bold cursor-pointer' />
+                        <IoLanguageSharp className='text-2xl font-bold' />
+                        <RxAvatar className='text-2xl font-bold' />
+                        <LuShoppingCart className='text-2xl font-bold' />
                     </div>
                 </div>) : (
                     <div className='h-20 w-full '>
-                        <div className="flex items-center justify-center gap-3  mt-3 mx-auto">
-                            <input className='w-[60%] h-20 border' type="text" />
-                            <button onClick={() => setSearchBar(true)}>close</button>
+                        <div className="flex items-center px-5 rounded-lg border w-fit justify-center gap-3  mt-3 mx-auto">
+                            <input
+                            placeholder='What are you looking for....'
+                            className='w-[700px] h-14 focus:right-0 focus:outline-none ' type="text" />
+                            <button onClick={() => setSearchBar(true)}> <IoMdClose className='text-4xl' /></button>
                         </div>
 
                     </div>
