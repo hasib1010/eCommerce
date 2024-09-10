@@ -3,6 +3,7 @@ import './App.css'
 import Slider from './Components/Slider/Slider'
 
 import Marquee from "react-fast-marquee";
+import LandingCattegories from './Components/LandingCattegories/LandingCattegories';
 
 function App() {
 
@@ -12,26 +13,29 @@ function App() {
       <div className='w-full  bg-[#8567e6]'>
         <Marquee className='py-1 mt-2'>
           <div className='flex text-with-outline'>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
-            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free</h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
+            <h3 className='mr-32 text-2xl'>Buy 2 Hoodies & Get 1 Free <span className='text-sm text-red-400'>only on fabyoh</span></h3>
           </div>
         </Marquee>
+      </div>
+      <div className="container mx-auto mt-20">
+      <LandingCattegories/>
       </div>
 
     </>
