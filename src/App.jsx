@@ -9,6 +9,7 @@ import logo1 from './assets/logo/free.png'
 import logo2 from './assets/logo/pay.png'
 import logo3 from './assets/logo/return.png'
 import TodaysDeals from './Components/Today\'sdeals/TodaysDeals';
+import img from './assets/comingSoon.png'
 function App() {
 
   return (
@@ -77,6 +78,9 @@ function App() {
       <div className='min-h-[500px] container mx-auto bg-no-repeat bg-center mb-20 bg-[url("https://www.orchardtaunton.co.uk/app/uploads/2020/03/OSC-Spring-Generic-2020-Website-Fashion-Banner-01.jpg")]'></div>
       <h3 className="container mx-auto text-4xl  mb-10 font-semibold ">Today's Deal</h3>
       <TodaysDeals />
+      <div>
+        <img className='object-cover bg-cover mx-auto h-1/2' src={img} alt="" />
+      </div>
     </div>
   )
 }
