@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { HeartIcon } from '@heroicons/react/24/solid';  
+import { HeartIcon } from '@heroicons/react/24/solid';
 
 const FeatureProducts = () => {
+    
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [wishlist, setWishlist] = useState(new Set());  
+    const [wishlist, setWishlist] = useState(new Set());
 
     const fetchData = async () => {
         const url = 'https://apidojo-hm-hennes-mauritz-v1.p.rapidapi.com/products/list?country=us&lang=en&currentpage=0&pagesize=30&categories=men_all&concepts=H%26M%20MAN';
@@ -23,8 +24,8 @@ const FeatureProducts = () => {
                 throw new Error('Network response was not ok');
             }
             const result = await response.json();
-            console.log(result); // Debugging the structure of the result
-            const productsArray = result.results || []; // Adjust based on actual response structure
+            console.log(result);
+            const productsArray = result.results || [];
             setProducts(productsArray.slice(0, 8));
             setLoading(false);
         } catch (error) {

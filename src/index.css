@@ -4,11 +4,54 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
-*{
-  font-family: "Josefin Sans", sans-serif; }
+* {
+  font-family: "Josefin Sans", sans-serif;
+}
+
 .text-with-outline {
-    background-color: #8567e6;
-    color: #ffffff;           
-    font-weight: semibold; 
-    padding: 10px 0 10px 5px;          
-  }
+  background-color: #8567e6;
+  color: #ffffff;
+  font-weight: semibold;
+  padding: 10px 0 10px 5px;
+}
+
+ 
+ 
+
+.p-carousel-prev,
+.p-carousel-next {
+  position: absolute;
+  top: 50%; /* Vertically centers the buttons */
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  outline: none;
+  z-index: 10;
+  display: hidden !important;
+}
+
+.p-carousel-prev {
+  left: -25px; /* Moves button outside the left border */
+}
+
+.p-carousel-next {
+  right: -25px; /* Moves button outside the right border */
+}
+
+.p-icon { 
+  height: 50px !important;
+  width: 50px !important;
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%;
+  padding: 5px;
+  border: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.p-carousel-prev:hover .p-icon,
+.p-carousel-next:hover .p-icon {
+  background-color: lightgray;
+}
