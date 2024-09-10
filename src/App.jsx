@@ -4,6 +4,7 @@ import Slider from './Components/Slider/Slider'
 
 import Marquee from "react-fast-marquee";
 import LandingCattegories from './Components/LandingCattegories/LandingCattegories';
+import FeatureProducts from './Components/Featured/FeatureProducts';
 
 function App() {
 
@@ -35,7 +36,11 @@ function App() {
         </Marquee>
       </div>
       <div className="container mx-auto mt-20">
-      <LandingCattegories/>
+        <LandingCattegories />
+        <h3 className="text-4xl mb-10 font-bold text-center">Feature Products</h3>
+        <div className='mb-20'>
+          <FeatureProducts></FeatureProducts>
+        </div>
       </div>
 
     </>
