@@ -2,12 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
-
-
+*{
+  font-family: "Josefin Sans", sans-serif; }
 .text-with-outline {
     background-color: #8567e6;
     color: #ffffff;           
-    font-weight: bold; 
+    font-weight: semibold; 
     padding: 10px 0 10px 5px;          
   }

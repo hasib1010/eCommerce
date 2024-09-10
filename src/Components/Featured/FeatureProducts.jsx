@@ -52,7 +52,7 @@ const FeatureProducts = () => {
     if (loading) return (
         <div>
             <img className='w-1/3 mx-auto rounded-full' src="https://cdn.dribbble.com/users/1019864/screenshots/10758864/fashion3.gif" alt="Loading" />
-            <p className='text-center mt-3 font-bold'>Loading...</p>
+            <p className='text-center mt-3 font-semibold'>Loading...</p>
         </div>
     );
     if (error) return <p>Error: {error}</p>;
@@ -84,8 +84,8 @@ const FeatureProducts = () => {
                         ) : (
                             <p>No Image Available</p>
                         )}
-                        <p className='text-xl font-bold mt-3 text-center'>{product.name || 'No name available'}</p>
-                        <p className='text-sm text-red-600 font-bold mt-3 text-center'>flat 20% Discount</p>
+                        <p className='text-xl font-semibold mt-3 text-center'>{product.name || 'No name available'}</p>
+                        <p className='text-sm text-red-600 font-semibold mt-3 text-center'>flat 20% Discount</p>
                     </div>
                 ))}
             </div>
