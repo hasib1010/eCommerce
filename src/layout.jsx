@@ -6,7 +6,7 @@ import NavBar from './Navbar';
 const Layout = () => {
     return (
         <div className='relative'>
-            {/* Marquee Component */}
+         
             <div className='w-full  bg-[#8567e6]'>
                 <Marquee className='py-1'>
                     <div className='flex text-with-outline'>
