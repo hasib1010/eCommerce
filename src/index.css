@@ -6,9 +6,8 @@
 
 
 .text-with-outline {
-    background-color: #6302ff;
+    background-color: #8567e6;
     color: #ffffff;           
     font-weight: bold; 
-    font-size: 1.5rem;         
-    -webkit-text-stroke: 1px  rgb(0, 0, 0);          
+    padding: 10px 0 10px 5px;          
   }

@@ -3,26 +3,46 @@ import { Outlet } from 'react-router-dom';
 import Marquee from "react-fast-marquee";
 import NavBar from './Navbar';
 
-
 const Layout = () => {
     return (
-        <div>
-            <Marquee className=''>
-                <div className='flex text-with-outline py-1'> 
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
-                 <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3> 
-                </div>
-            </Marquee>
-            <NavBar></NavBar>
-            <Outlet></Outlet>
-            Layout
+        <div className='relative'>
+            {/* Marquee Component */}
+            <div className='w-full  bg-[#8567e6]'>
+                <Marquee className='py-1'>
+                    <div className='flex text-with-outline'>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                        <h3 className='mr-32'>30% OFF - Offer Ends Tomorrow - Grab Now</h3>
+                    </div>
+                </Marquee>
+            </div>
+
+            {/* Navbar - fixed to the top */}
+            <NavBar />
+
+            {/* Main Content */}
+            <div className=' '>
+                <Outlet />
+            </div>
+
+            {/* Footer or other layout components */}
         </div>
     );
 }
-
 
 export default Layout;
