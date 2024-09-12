@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
-import { Carousel } from 'primereact/carousel';
-import { Tag } from 'primereact/tag';
+import   { useState, useEffect } from 'react'; 
+import { Carousel } from 'primereact/carousel'; 
 import { Link } from 'react-router-dom';
 
 
