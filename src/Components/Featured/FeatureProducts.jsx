@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
+import './FeatureProducts.css';  
 
 const FeatureProducts = () => {
     const [products, setProducts] = useState([]);
@@ -8,6 +9,7 @@ const FeatureProducts = () => {
     const [error, setError] = useState(null);
     const [wishlist, setWishlist] = useState(new Set());
     const [hoveredProduct, setHoveredProduct] = useState(null);
+    const [loadedImages, setLoadedImages] = useState(new Set());
 
     const fetchData = async () => {
         const url = 'http://localhost:3000/products/clothings';
@@ -18,7 +20,6 @@ const FeatureProducts = () => {
                 throw new Error('Network response was not ok');
             }
             const result = await response.json();
-            console.log(result);  
             const productsArray = result.products || [];
             setProducts(productsArray);
             setLoading(false);
@@ -44,6 +45,26 @@ const FeatureProducts = () => {
         });
     };
 
+    const preloadImage = (url) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = resolve;
+        });
+    };
+
+    const handleMouseEnter = async (product) => {
+        setHoveredProduct(product._id);
+        if (!loadedImages.has(product.hoverImageUrl)) {
+            await preloadImage(product.hoverImageUrl);
+            setLoadedImages((prev) => new Set(prev).add(product.hoverImageUrl));
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredProduct(null);
+    };
+
     if (loading) {
         return (
             <div>
@@ -56,24 +77,26 @@ const FeatureProducts = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return date.toLocaleDateString(undefined, options);
     };
+
     return (
         <div className='mb-20'>
             <div className="grid grid-cols-4 gap-20">
                 {products.map((product) => (
-                    < div
+                    <div
                         key={product._id}
                         className="relative shadow-xl cursor-pointer pb-5 rounded-xl transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100"
-                        onMouseEnter={() => setHoveredProduct(product._id)}
-                        onMouseLeave={() => setHoveredProduct(null)}
+                        onMouseEnter={() => handleMouseEnter(product)}
+                        onMouseLeave={handleMouseLeave}
                     >
                         {/* Wishlist Icon */}
                         <button
-                            className="absolute top-2 right-2 p-2 rounded-full bg-white shadow-lg hover:bg-gray-200 transition-colors"
+                            className="absolute top-2 right-2 p-2 z-40 rounded-full bg-white shadow-lg hover:bg-gray-200 transition-colors"
                             onClick={() => toggleWishlist(product._id)}
                         >
                             <HeartIcon
@@ -83,27 +106,32 @@ const FeatureProducts = () => {
 
                         {/* Product Image */}
                         <Link to={`product/${product._id}`}>
-                            <img
-                                className='rounded-t-xl w-full'
-                                src={hoveredProduct === product._id ? product.hoverImageUrl : product.thumbnailImage}
-                                alt={product.name || 'Product image'}
-                            />
+                            <div className="product-image-container">
+                                <img
+                                    className={`product-image rounded-t-md ${hoveredProduct === product._id ? 'hidden' : 'visible'}`}
+                                    src={product.thumbnailImage}
+                                    alt={product.name || 'Product image'}
+                                />
+                                <img
+                                    className={`product-image rounded-t-md ${hoveredProduct === product._id ? 'visible' : 'hidden'}`}
+                                    src={product.hoverImageUrl}
+                                    alt={product.name || 'Product hover image'}
+                                />
+                            </div>
                             <p className='text-xl font-semibold mt-3 text-center'>{product.name || 'No name available'}</p>
-                            <p className='text-sm text-red-600 font-semibold mt-3 text-center '>
+                            <p className='text-xs bg-[#8567E6] h-fit py-4 text-white font-semibold text-center'>
                                 {product.discountAmount ? (
                                     <>
-                                        Flat {product.discountAmount}% Discount until{' '} <br />
-                                        <span className='underline text-green-600 font-bold italic underline-offset-4'>{formatDate(product.discountValidUntil)}</span>
+                                        Flat {product.discountAmount}% Discount until{' '}  
+                                        <span>{formatDate(product.discountValidUntil)}</span>
                                     </>
                                 ) : 'No Discount'}
                             </p>
                         </Link>
-
                     </div>
-
                 ))}
             </div>
-        </div >
+        </div>
     );
 };
 
