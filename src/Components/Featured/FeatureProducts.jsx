@@ -12,7 +12,7 @@ const FeatureProducts = () => {
     const [loadedImages, setLoadedImages] = useState(new Set());
 
     const fetchData = async () => {
-        const url = 'http://localhost:3000/products/clothings';
+        const url = 'https://e-commerce-server-alpha.vercel.app/products/clothings';
 
         try {
             const response = await fetch(url);
