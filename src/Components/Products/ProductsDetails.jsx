@@ -6,9 +6,10 @@ const ProductDetails = () => {
     const [product, setProduct] = useState(null);
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
+    const [thumbUrl, setThumbUrl] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/products/clothings")
+        fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
             .then(res => res.json())
             .then(data => {
                 const matchedProduct = data.products.find(product => product._id === id);
@@ -20,11 +21,22 @@ const ProductDetails = () => {
 
     if (!product) return <p>Loading...</p>;
 
+
     return (
         <div className='container mx-auto mt-10'>
             <div className='my-5 flex gap-10'>
-                <div className='border rounded-xl w-fit flex-1 flex items-center justify-center'>
-                    <img src={product.thumbnailImage} className='rounded-xl' alt={product.name} />
+                <div className='border rounded-xl w-fit flex-1 flex flex-col pt-10 items-center justify-start gap-20'>
+                    <img src={thumbUrl ? thumbUrl : product.thumbnailImage}
+                        className='rounded-xl h-[500px]' alt={product.name} />
+                    <div className="flex gap-3 ">
+                        {
+                            product.catalogImages.map(url => <div className=''>
+                                <img onClick={() => setThumbUrl(url)}
+                                    className={`${thumbUrl === url? "opacity-100 bg-black p-1": "opacity-50"}  opacity-50 hover:opacity-100 h-20 rounded-xl border cursor-pointer `}
+                                    src={url} alt="" />
+                            </div>)
+                        }
+                    </div>
                 </div>
                 <div className='flex-1 flex flex-col gap-10'>
                     <h3 className='text-5xl font-bold'>{product.name}</h3>
@@ -73,13 +85,7 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-10">
-                {
-                    product.catalogImages.map(url => <div className=''>
-                        <img className='rounded-xl' src={url} alt="" />
-                    </div>)
-                }
-            </div>
+
 
         </div>
     );
