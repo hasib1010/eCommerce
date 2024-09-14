@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@studio-freight/react-lenis": "^0.0.47",
+    "gsap": "^3.12.5",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "primereact": "^10.8.2",
