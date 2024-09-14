@@ -1,5 +1,5 @@
-import   { useState, useEffect } from 'react'; 
-import { Carousel } from 'primereact/carousel'; 
+import { useState, useEffect } from 'react';
+import { Carousel } from 'primereact/carousel';
 import { Link } from 'react-router-dom';
 
 
@@ -33,24 +33,15 @@ const TodaysDeals = () => {
 
 
     const fetchData = async () => {
-        const url = 'https://apidojo-hm-hennes-mauritz-v1.p.rapidapi.com/products/list?country=us&lang=en&currentpage=0&pagesize=30&categories=men_all&concepts=H%26M%20MAN';
-        const options = {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-key': 'b59fc4593bmsh8d89fcd214b16cep1794fajsn6ebaf33730e0',
-                'x-rapidapi-host': 'apidojo-hm-hennes-mauritz-v1.p.rapidapi.com'
-            }
-        };
-
+        const url = 'https://e-commerce-server-alpha.vercel.app/products/clothings';
         try {
-            const response = await fetch(url, options);
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const result = await response.json();
-            console.log(result);
-            const productsArray = result.results || [];
-            setProducts(productsArray.slice(9,19  ));
+            const productsArray = result.products || [];
+            setProducts(productsArray);
             setLoading(false);
         } catch (error) {
             setError(error.message);
@@ -72,13 +63,10 @@ const TodaysDeals = () => {
 
     const productTemplate = (product) => {
         return (
-            <div className=" surface-border border-round  text-center   px-3">
+            <div className=" surface-border border-round  text-center   px-3  ">
                 <div className=" relative w-fit mx-auto  pb-10">
-                    <Link to={"#"}><img src={product.images[0].url} alt={product.name} className=" w-fit mx-auto  shadow-2" /></Link>
-                    <p className='absolute bottom-1 left-0    text-xl text-white font-bold text-center bg-[#8567e6] w-full'><span className=' '>{product.name}</span>
-                        <br /> <span className='text-base'>25% Discount</span>
-                    </p>
-                    <p></p>
+                    <Link to={`product/${product._id}`}><img src={product.hoverImageUrl} alt={product.name} className=" h-72 w-fit mx-auto  shadow-2  transition-transform transform hover:scale-105 hover:shadow-md hover:bg-gray-100" /></Link>
+
                 </div>
             </div>
         );

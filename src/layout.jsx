@@ -7,7 +7,7 @@ import { ReactLenis, useLenis } from '@studio-freight/react-lenis'
 
 const Layout = () => {
     const lenis = useLenis(({ scroll }) => {
-        // called every scroll
+         
     })
 
     return (
@@ -43,16 +43,13 @@ const Layout = () => {
                         </div>
                     </Marquee>
                 </div>
-
-                {/* Navbar - fixed to the top */}
+ 
                 <NavBar />
-
-                {/* Main Content */}
+ 
                 <div className=' '>
                     <Outlet />
                 </div>
-
-                {/* Footer or other layout components */}
+ 
             </div>
         </ReactLenis>
     );
