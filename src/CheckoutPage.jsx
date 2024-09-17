@@ -1,52 +1,57 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; 
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
 import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from './CheckoutForm'; 
-import { useCart } from './Components/Providers/CartProvider';
-
-const stripePromise = loadStripe('pk_test_qblFNYngBkEdjEZ16jxxoWSM');
+ 
+const stripePromise = loadStripe("pk_test_51PypvVKj6EpE0ZfrXAJfky3r5Y5ugbjJTVgJZXHv8gMkImcZFQWrXZMNhSOZdtL6Bux4CnVYbvWwoer8Ol0AW6G100t2eYWhWC");
 
 const CheckoutPage = () => {
-    const navigate = useNavigate();
     const location = useLocation();
-    const { clearCart } = useCart(); // Access clearCart function
-
     const { items, total } = location.state || { items: [], total: 0 };
 
+    const [clientSecret, setClientSecret] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     useEffect(() => {
-        // Check if we are on the success page and clear the cart
-        if (location.pathname === '/success') {
-            clearCart(); // Clear the cart
-        }
-    }, [location.pathname, clearCart]);
+        const fetchClientSecret = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items, total })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setClientSecret(data.clientSecret);
+            } catch (error) {
+                console.error('Failed to fetch client secret:', error.message);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClientSecret();
+    }, [items, total]);
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Checkout</h1>
-            <div>
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-                <ul className='space-y-4'>
-                    {items.map(item => (
-                        <li key={`${item.id}-${item.size}-${item.color}`} className='border p-4 rounded-lg flex items-center gap-4'>
-                            <img src={item.thumbnailImage} alt={item.name} className='w-24 h-24 object-cover rounded' />
-                            <div className='flex-1'>
-                                <h3 className='text-xl font-semibold'>{item.name}</h3>
-                                <p className='text-gray-600'>Size: {item.size}</p>
-                                <p className='text-gray-600'>Color: {item.color}</p>
-                                <p className='text-lg font-bold'>${parseFloat(item.price).toFixed(2)} x {item.quantity}</p>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-                <div className='mt-6 text-xl font-bold'>
-                    Total: ${total.toFixed(2)}
-                </div>
-            </div>
-            <Elements stripe={stripePromise}>
-                <CheckoutForm items={items} total={total} />
-            </Elements>
-        </div>
+        <>
+            {loading && <div>Loading...</div>}
+            {error && <div>Error: {error}</div>}
+            {clientSecret && stripePromise ? (
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckoutForm items={items} total={total} clientSecret={clientSecret} />
+                </Elements>
+            ) : (
+                <div>No payment information available</div>
+            )}
+        </>
     );
 };
 

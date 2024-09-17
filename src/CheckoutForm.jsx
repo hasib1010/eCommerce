@@ -1,55 +1,169 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import { AuthContext } from './Components/Providers/AuthProvider';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
-const CheckoutForm = ({ items, total }) => {
-    const stripe = useStripe();
-    const elements = useElements();
-    const [loading, setLoading] = useState(false);
+const CheckoutForm = ({ items, total, clientSecret }) => { 
+  
+  const { user } = useContext(AuthContext);
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [error, setError] = useState(null);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+  const stripe = useStripe();
+  const elements = useElements();
+  const navigate = useNavigate(); // Hook for navigation
 
-        if (!stripe || !elements) return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        setLoading(true);
+    if (!stripe || !elements) {
+      setError('Stripe.js has not loaded yet.');
+      return;
+    }
 
-        try {
-            const response = await fetch('https://e-commerce-server-alpha.vercel.app/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ items }),
-            });
+    if (!shippingAddress || !contactNumber) {
+      setError('Please enter shipping address and contact number.');
+      return;
+    }
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+    try {
+      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            address: {
+              line1: shippingAddress,
+            },
+            phone: contactNumber,
+          },
+        },
+      });
 
-            const { url } = await response.json();
-            window.location.href = url; // Redirect to Stripe Checkout
-        } catch (error) {
-            console.error('Error redirecting to checkout:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (stripeError) {
+        console.error('Stripe Error:', stripeError); // Log error for debugging
+        setError(`Payment failed: ${stripeError.message}`);
+        return;
+      }
 
-    return (
-        <form onSubmit={handleSubmit}>
-            {/* <CardElement className="my-4 p-2 border rounded" /> */}
-            <button
-                type="submit"
-                disabled={!stripe || loading}
-                className={`w-full h-20 text-white px-4 py-2 rounded mt-4 transition duration-300 ease-in-out 
-        ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`
-                }
-            >
-                {loading ? 'Processing...' : 'Pay Now'}
-            </button>
+      if (paymentIntent.status !== 'succeeded') {
+        setError('Payment did not succeed.');
+        return;
+      }
 
-        </form>
-    );
+      const transactionId = paymentIntent.id;
+
+      const orderData = {
+        uid: user.uid,
+        items,
+        // items: items.map(item => ({
+        //   ItemId: item._id,
+        //   name: item.name,
+        //   size: item.size,
+        //   color: item.color,
+        //   price: item.price,
+        //   quantity: item.quantity,
+        // })),
+        transactionId: transactionId,
+        shippingAddress: shippingAddress,
+        contactNumber: contactNumber,
+        total: total,
+      };
+
+      console.log('Order Data:', orderData);
+
+      const response = await fetch('http://localhost:3000/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to post order');
+      }
+
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your order has been placed successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        // navigate('/userDashboard');
+      });
+
+    } catch (error) {
+      console.error('Error:', error); // Log error for debugging
+      setError(`An error occurred: ${error.message}`);
+    }
+  };
+
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Review Your Order</h2>
+
+      {items.length === 0 ? (
+        <p className="text-gray-600">Your cart is empty.</p>
+      ) : (
+        <div>
+          <ul className="space-y-4 mb-6">
+            {items.map((item) => (
+              <li key={`${item.id}-${item.size}-${item.color}`} className="border border-gray-200 p-4 rounded-lg flex items-center gap-4 bg-gray-50 shadow-sm">
+                <img src={item.thumbnailImage} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
+                  <p className="text-gray-600">Size: {item.size}</p>
+                  <p className="text-gray-600">Color: {item.color}</p>
+                  <p className="text-lg font-bold text-gray-800">${parseFloat(item.price).toFixed(2)}</p>
+                  <p className="text-lg font-bold text-gray-600">Quantity: {item.quantity}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="text-xl font-bold mb-6 text-gray-800">
+            Total: ${total.toFixed(2)}
+          </div>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <label className="block text-gray-700 font-semibold mb-2">Shipping Address</label>
+        <input
+          type="text"
+          value={shippingAddress}
+          onChange={(e) => setShippingAddress(e.target.value)}
+          placeholder="Enter your shipping address"
+          className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div className="mb-6">
+        <label className="block text-gray-700 font-semibold mb-2">Contact Number</label>
+        <input
+          type="text"
+          value={contactNumber}
+          onChange={(e) => setContactNumber(e.target.value)}
+          placeholder="Enter your contact number"
+          className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      <div className="mb-6">
+        <CardElement className="border border-gray-300 p-3 rounded-md shadow-sm" />
+      </div>
+      <button
+        type="submit"
+        disabled={!stripe}
+        className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Pay
+      </button>
+    </form>
+  );
 };
 
 export default CheckoutForm;

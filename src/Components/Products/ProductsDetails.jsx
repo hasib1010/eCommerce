@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import AddToCartButton from '../AddToCartButton';  
+import AddToCartButton from '../AddToCartButton';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -13,13 +13,11 @@ const ProductDetails = () => {
     fetch(`https://e-commerce-server-alpha.vercel.app/products/clothings/${id}`)
       .then(res => res.json())
       .then(data => {
-        
         setProduct(data);
       })
       .catch(error => console.error('Error fetching product:', error));
   }, [id]);
-  console.log(product);
-  
+
   if (!product) return <p>Loading...</p>;
 
   return (
@@ -29,17 +27,15 @@ const ProductDetails = () => {
           <img
             src={thumbUrl ? thumbUrl : product.thumbnailImage}
             className='rounded-xl h-[500px]' alt={product.name} />
-          <div className="flex gap-3 ">
-            {
-              product.catalogImages.map(url => (
-                <div key={url}>
-                  <img
-                    onClick={() => setThumbUrl(url)}
-                    className={`${thumbUrl === url ? "opacity-100 bg-black p-1" : "opacity-50"} opacity-50 hover:opacity-100 h-20 rounded-xl border cursor-pointer`}
-                    src={url} alt="" />
-                </div>
-              ))
-            }
+          <div className="flex gap-3">
+            {product.catalogImages.map(url => (
+              <div key={url}>
+                <img
+                  onClick={() => setThumbUrl(url)}
+                  className={`${thumbUrl === url ? "opacity-100 bg-black p-1" : "opacity-50"} opacity-50 hover:opacity-100 h-20 rounded-xl border cursor-pointer`}
+                  src={url} alt="" />
+              </div>
+            ))}
           </div>
         </div>
         <div className='flex-1 flex flex-col gap-10'>

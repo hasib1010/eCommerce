@@ -1,59 +1,79 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../Providers/CartProvider';
+// SuccessPage.jsx
 
-const Success = () => {
-    const { clearCart } = useCart();
-    const navigate = useNavigate();
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-    useEffect(() => {
-        // Clear the cart when the component mounts
-        clearCart();
-        // Redirect to the home page after clearing the cart
-        const timer = setTimeout(() => {
-            navigate('/');
-        }, 3000); // Redirect after 3 seconds
+const SuccessPage = () => {
+  const location = useLocation();
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-        // Cleanup timer if component unmounts
-        return () => clearTimeout(timer);
-    }, [clearCart, navigate]);
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      const searchParams = new URLSearchParams(location.search);
+      const sessionId = searchParams.get('session_id'); // Extract session_id from URL
 
-    return (
-        <div className="min-h-screen bg-green-100 flex flex-col justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
-                <h1 className="text-3xl font-bold text-green-600 mb-4">Payment Successful</h1>
-                <p className="text-gray-600 mb-6">
-                    Thank you for your purchase! Your payment has been processed successfully.
-                </p>
+      if (!sessionId) {
+        setError('Session ID is missing');
+        setLoading(false);
+        return;
+      }
 
-                <div className="bg-gray-100 p-4 rounded-lg mb-6">
-                    <p className="font-semibold text-gray-700">Order Number: <span className="text-gray-900">#123456789</span></p>
-                    <p className="font-semibold text-gray-700">Estimated Delivery: <span className="text-gray-900">Sep 20, 2024</span></p>
-                </div>
+      try {
+        const response = await fetch(`http://localhost:3000/order/${sessionId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch order details');
+        }
 
-                <div className="flex justify-center space-x-4 mb-6">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
-                        onClick={() => navigate('/order-summary')} // Adjust route if needed
-                    >
-                        View Order
-                    </button>
-                    <button
-                        className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg"
-                        onClick={() => navigate('/')}
-                    >
-                        Return Home
-                    </button>
-                </div>
+        const data = await response.json();
+        setOrderDetails(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                <div className="mt-4">
-                    <p className="text-gray-500">
-                        Need help? <a href="/support" className="text-blue-500 underline">Contact Support</a>
-                    </p>
-                </div>
-            </div>
+    fetchOrderDetails();
+  }, [location.search]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Order Confirmation</h1>
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+        <div className='border p-4 rounded-lg mb-4'>
+          <h3 className='text-lg font-semibold'>Customer Information</h3>
+          <p><strong>Name:</strong> {orderDetails.customerName}</p>
+          <p><strong>Email:</strong> {orderDetails.customerEmail}</p>
+          <p><strong>Shipping Address:</strong></p>
+          <p>{orderDetails.shippingAddress.name}</p>
+          <p>{orderDetails.shippingAddress.address.line1} {orderDetails.shippingAddress.address.line2}</p>
+          <p>{orderDetails.shippingAddress.address.city}, {orderDetails.shippingAddress.address.state} {orderDetails.shippingAddress.address.postal_code}</p>
+          <p>{orderDetails.shippingAddress.address.country}</p>
         </div>
-    );
+        <h3 className='text-lg font-semibold mb-2'>Order Details</h3>
+        <ul className='space-y-4'>
+          {orderDetails.products.map((item, index) => (
+            <li key={index} className='border p-4 rounded-lg'>
+              <h4 className='text-xl font-semibold'>{item.name}</h4>
+              <p>Quantity: {item.quantity}</p>
+              <p>Price: ${item.amount.toFixed(2)}</p>
+            </li>
+          ))}
+        </ul>
+        <div className='mt-6 text-xl font-bold'>
+          <p>Total Amount: ${orderDetails.amount.toFixed(2)}</p>
+          <p>Order Number: {orderDetails.orderNumber}</p>
+          <p>Estimated Delivery: {orderDetails.estimatedDelivery}</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default Success;
+export default SuccessPage;
