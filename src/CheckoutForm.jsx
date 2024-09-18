@@ -3,9 +3,10 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { AuthContext } from './Components/Providers/AuthProvider';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from './Components/Providers/CartProvider';
 
-const CheckoutForm = ({ items, total, clientSecret }) => { 
-  
+const CheckoutForm = ({ items, total, clientSecret }) => {  
+  const { dispatch } = useCart();
   const { user } = useContext(AuthContext);
   const [shippingAddress, setShippingAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -42,7 +43,7 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
       });
 
       if (stripeError) {
-        console.error('Stripe Error:', stripeError); // Log error for debugging
+        console.error('Stripe Error:', stripeError);  
         setError(`Payment failed: ${stripeError.message}`);
         return;
       }
@@ -53,26 +54,21 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
       }
 
       const transactionId = paymentIntent.id;
+ 
+      const confirmedAt = new Date().toISOString();  
 
       const orderData = {
         uid: user.uid,
-        items,
-        // items: items.map(item => ({
-        //   ItemId: item._id,
-        //   name: item.name,
-        //   size: item.size,
-        //   color: item.color,
-        //   price: item.price,
-        //   quantity: item.quantity,
-        // })),
+        items, 
         transactionId: transactionId,
         shippingAddress: shippingAddress,
-        contactNumber: contactNumber,
+        phoneNumber: contactNumber,
         total: total,
+        confirmedAt: confirmedAt  
       };
 
-      console.log('Order Data:', orderData);
-
+      console.log('Order Data:', orderData); 
+      
       const response = await fetch('http://localhost:3000/orders', {
         method: 'POST',
         headers: {
@@ -91,15 +87,15 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
         icon: 'success',
         confirmButtonText: 'OK',
       }).then(() => {
-        // navigate('/userDashboard');
+        navigate('/userDashboard');
+        dispatch({ type: 'CLEAR_CART' });
       });
 
     } catch (error) {
-      console.error('Error:', error); // Log error for debugging
+      console.error('Error:', error);  
       setError(`An error occurred: ${error.message}`);
     }
   };
-
 
   return (
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">

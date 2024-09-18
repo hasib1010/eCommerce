@@ -62,7 +62,7 @@ const NavBar = () => {
                                 </div>
                                 <div className='flex-1 flex items-center justify-center'>
                                     <Link to={'/'}>
-                                        <img className='h-16' src="/logo.png" alt="Logo" />
+                                        <img className='h-16' src="https://fabyoh.com/_next/image?url=https%3A%2F%2Fapi.fabyoh.com%2Flogos%2Fconverted-c274775b-8cda-4b47-af41-342385184758.webp&w=1920&q=75" alt="Logo" />
                                     </Link>
                                 </div>
                                 <div className='flex-1 flex justify-end items-center gap-8'>

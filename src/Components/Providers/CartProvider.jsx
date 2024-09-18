@@ -16,25 +16,25 @@ const initialState = getCartFromLocalStorage();
 const cartReducer = (state, action) => {
     switch (action.type) {
         case 'ADD_ITEM': {
-            const { id, size, color } = action.payload;
-            // Find if the item already exists in the cart with the same size and color
+            const { id, size, color, quantity } = action.payload; 
             const existingItemIndex = state.items.findIndex(item =>
                 item.id === id && item.size === size && item.color === color
             );
-
+        
             if (existingItemIndex > -1) {
                 // Item exists, increase the quantity
                 const updatedItems = [...state.items];
                 updatedItems[existingItemIndex] = {
                     ...updatedItems[existingItemIndex],
-                    quantity: updatedItems[existingItemIndex].quantity + 1
+                    quantity: updatedItems[existingItemIndex].quantity + quantity // Use the incoming quantity
                 };
                 return { ...state, items: updatedItems };
             } else {
                 // Item does not exist, add new item
-                return { ...state, items: [...state.items, { ...action.payload, quantity: 1 }] };
+                return { ...state, items: [...state.items, { ...action.payload, quantity }] }; // Use the incoming quantity
             }
         }
+            
         case 'INCREASE_QUANTITY': {
             const { id, size, color } = action.payload;
             const updatedItems = state.items.map(item =>

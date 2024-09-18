@@ -1,4 +1,4 @@
- 
+
 import './App.css'
 import Slider from './Components/Slider/Slider'
 
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div className='z-10'>
-      <Slider></Slider> 
+      <Slider></Slider>
       <div className='w-full  bg-[#8567e6]'>
         <Marquee className='py-1 mt-2'>
           <div className='flex text-with-outline'>
@@ -75,7 +75,7 @@ function App() {
         </div>
       </div>
       {/*  */}
-     
+
       <div className='min-h-[500px] container mx-auto bg-no-repeat bg-center mb-20 bg-[url("https://www.orchardtaunton.co.uk/app/uploads/2020/03/OSC-Spring-Generic-2020-Website-Fashion-Banner-01.jpg")]'></div>
       <h3 className="container mx-auto text-4xl  mb-10 font-semibold ">{"Today's Deal"}</h3>
       <TodaysDeals />

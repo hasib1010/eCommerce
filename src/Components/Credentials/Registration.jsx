@@ -43,11 +43,8 @@ const Registration = () => {
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(`HTTP error! status: ${response.status}, ${errorData.message}`);
-            }
-
-            // Redirect to login page
-            navigate('/login');
-
+            } 
+            navigate('/userDashboard'); 
         } catch (error) {
             console.error("Error registering user:", error);
             alert(`Error: ${error.message}`);

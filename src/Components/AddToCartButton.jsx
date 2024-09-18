@@ -2,7 +2,9 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { useCart } from './Providers/CartProvider';
 
-const AddToCartButton = ({ product, selectedSize, selectedColor }) => {
+const AddToCartButton = ({ product, selectedSize, selectedColor, quantity }) => {
+    console.log(quantity);
+    
     const { dispatch } = useCart();
 
     const handleAddToCart = () => {
@@ -16,6 +18,7 @@ const AddToCartButton = ({ product, selectedSize, selectedColor }) => {
                     price: product.price,
                     size: selectedSize,
                     color: selectedColor,
+                    quantity: quantity,  // Include quantity here
                 }
             });
             
@@ -34,6 +37,7 @@ const AddToCartButton = ({ product, selectedSize, selectedColor }) => {
             });
         }
     };
+    
 
     return (
         <button

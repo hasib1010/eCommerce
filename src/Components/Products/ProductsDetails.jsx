@@ -8,6 +8,7 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [thumbUrl, setThumbUrl] = useState(null);
+  const [quantity, setQuantity] = useState(1); // State for product quantity
 
   useEffect(() => {
     fetch(`https://e-commerce-server-alpha.vercel.app/products/clothings/${id}`)
@@ -19,6 +20,18 @@ const ProductDetails = () => {
   }, [id]);
 
   if (!product) return <p>Loading...</p>;
+
+  const increaseQuantity = () => {
+    if (quantity < product.stock) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
 
   return (
     <div className='container mx-auto mt-10'>
@@ -84,10 +97,24 @@ const ProductDetails = () => {
             <p className='ml-20 font-bold'>{product.stock} pcs</p>
           </div>
 
-          <AddToCartButton 
+          {/* Quantity Selector */}
+          <div className='flex items-center gap-5'>
+            <button onClick={decreaseQuantity} className='bg-gray-200 px-3 py-1 rounded'>-</button>
+            <span className='text-xl font-bold'>{quantity}</span>
+            <button 
+              onClick={increaseQuantity} 
+              className={`bg-gray-200 px-3 py-1 rounded ${quantity >= product.stock ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={quantity >= product.stock} // Disable button if at stock limit
+            >
+              +
+            </button>
+          </div>
+
+          <AddToCartButton
             product={product}
             selectedSize={selectedSize}
             selectedColor={selectedColor}
+            quantity={quantity} 
           />
         </div>
       </div>
