@@ -9,14 +9,14 @@ import ProductDetails from './Components/Products/ProductsDetails.jsx';
 import { CartProvider } from './Components/Providers/CartProvider.jsx';
 import CheckoutPage from './CheckoutPage.jsx';
 import Cancel from './Components/Payments/Cancel.jsx';
-import Success from './Components/Payments/Success.jsx';
-import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
+import Success from './Components/Payments/Success.jsx'; 
 import AuthProvider from './Components/Providers/AuthProvider.jsx';
 import LogIn from './Components/Credentials/Login.jsx';
 import Registration from './Components/Credentials/Registration.jsx';
 import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx';
 import UserDashboard from './Components/Credentials/userDashboard.jsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  
+import ProductCatalog from './Components/ProductCatalog/ProductCatalog.jsx';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -26,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/navbar/:cat",
+        element: <ProductCatalog/>,
       },
       {
         path: "/login",

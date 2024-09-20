@@ -9,6 +9,28 @@ import { useCart } from './Components/Providers/CartProvider';
 import { AuthContext } from './Components/Providers/AuthProvider';
 
 const NavBar = () => {
+
+
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch("http://localhost:3000/products/clothings/categories");
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await res.json();
+                console.log(data.categories);
+                setCategories(data.categories);
+            } catch (error) {
+                console.error("Failed to fetch categories:", error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     const { user, logOut } = useContext(AuthContext);
     const [searchBar, setSearchBar] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -45,6 +67,7 @@ const NavBar = () => {
         };
     }, [isCartOpen]);
 
+
     return (
         <div className='shadow-lg sticky top-0 z-50 bg-gradient-to-r min-h-[105px] from-blue-400 via-indigo-500 to-purple-600 text-white'>
             <div className='container mx-auto px-4 py-5 relative'>
@@ -54,11 +77,11 @@ const NavBar = () => {
                         (
 
                             <div className='flex justify-between items-center'>
-                                <div className='flex-1 flex gap-8'>
-                                    <NavLink to={'/shirt'} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>Shirt</NavLink>
-                                    <NavLink to={'/t-shirt'} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>T-Shirt</NavLink>
-                                    <NavLink to={'/hoodies'} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>Hoodies</NavLink>
-                                    <NavLink to={'/jackets'} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>Jackets</NavLink>
+                                <div className='flex-1 flex gap-5'>
+                                    {
+                                        categories.map((item, index) => <NavLink key={index} to={`/navbar/${item}`} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>{item}</NavLink> )
+                                    }
+                                   
                                 </div>
                                 <div className='flex-1 flex items-center justify-center'>
                                     <Link to={'/'}>
