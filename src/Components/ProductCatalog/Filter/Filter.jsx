@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { AuthContext } from '../../Providers/AuthProvider';
+import Favorite from '@mui/icons-material/Favorite';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Swal from 'sweetalert2';
+import { IconButton } from '@mui/material';
 
 const Filter = () => {
     const { cat } = useParams();
+    const { user } = useContext(AuthContext);
 
     const [categories, setCategories] = useState([]);
     const [collapsed, setCollapsed] = useState({
@@ -12,10 +18,11 @@ const Filter = () => {
         trending: true,
     });
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [priceRange, setPriceRange] = useState([0, 100]); // Example range
-    const [inStock, setInStock] = useState(false); // Example stock filter
+    const [priceRange, setPriceRange] = useState([0, 5000]);
+    const [inStock, setInStock] = useState(false);
     const [allProducts, setAllProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [wishlist, setWishlist] = useState([]); // Wishlist state
 
     const fetchProducts = async () => {
         try {
@@ -23,15 +30,29 @@ const Filter = () => {
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             setAllProducts(data.products);
-            setFilteredProducts(data.products); // Initialize filtered products to show all
+            setFilteredProducts(data.products);
         } catch (error) {
             console.error("Failed to fetch products:", error);
         }
     };
 
+    const fetchUserWishlist = async (userId) => {
+        try {
+            const res = await fetch(`http://localhost:3000/users/${userId}`);
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+            setWishlist(data.wishList); // Set user's wishlist
+        } catch (error) {
+            console.error("Failed to fetch wishlist:", error);
+        }
+    };
+
     useEffect(() => {
         fetchProducts();
-    }, []);
+        if (user) {
+            fetchUserWishlist(user.uid); // Fetch wishlist if user is logged in
+        }
+    }, [user]); // Run this effect when the user changes
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -49,11 +70,10 @@ const Filter = () => {
 
     useEffect(() => {
         if (cat && categories.includes(cat)) {
-            setSelectedCategories([cat]); // Set the current category as selected
+            setSelectedCategories([cat]);
         }
     }, [cat, categories]);
 
-    // Filter products based on selected filters
     useEffect(() => {
         const filtered = allProducts.filter(product => {
             const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category);
@@ -81,12 +101,41 @@ const Filter = () => {
         });
     };
 
-    // Clear all filters
     const clearFilters = () => {
         setSelectedCategories([]);
-        setPriceRange([0, 100]); // Reset to default range
-        setInStock(false); // Reset stock filter
-        setFilteredProducts(allProducts); // Show all products
+        setPriceRange([0, 5000]);
+        setInStock(false);
+        setFilteredProducts(allProducts);
+    };
+
+    const toggleWishlist = (productId) => {
+        if (!user) {
+            Swal.fire({ icon: 'warning', title: 'Have You Logged In?' });
+            return;
+        }
+
+        setWishlist(prevWishlist => {
+            const newWishlist = prevWishlist.includes(productId)
+                ? prevWishlist.filter(id => id !== productId)
+                : [...prevWishlist, productId];
+            updateWishlist(user.uid, newWishlist);
+            return newWishlist;
+        });
+    };
+
+    const updateWishlist = async (id, updatedWishlist) => {
+        const dataToSubmit = { wishList: updatedWishlist };
+        try {
+            const response = await fetch(`http://localhost:3000/users/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataToSubmit)
+            });
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            Swal.fire({ title: 'Update Successful!', text: 'Your wishlist has been updated', icon: 'success' });
+        } catch (error) {
+            Swal.fire({ title: 'Error!', text: 'An error occurred while updating the wishlist', icon: 'error' });
+        }
     };
 
     return (
@@ -96,7 +145,6 @@ const Filter = () => {
                 <button onClick={clearFilters} className='text-red-500 font-bold'>Clear All</button>
             </div>
             <div className='flex mt-4'>
-                {/* Filter Options */}
                 <div className='flex flex-col border bg-white rounded-lg shadow-md min-w-[450px] p-4'>
                     <div className='flex items-center justify-between'>
                         <h3 className='uppercase text-2xl font-bold'>Filters</h3>
@@ -126,20 +174,20 @@ const Filter = () => {
                             </div>
                         )}
                     </div>
-                    {/* Additional filters like price and stock can be added similarly */}
+                    {/* Price Range Filter */}
                     <div className='border-b py-4'>
                         <h4 className='text-2xl font-semibold'>Price Range</h4>
                         <input
                             type="range"
                             min={0}
-                            max={100}
+                            max={100000}
                             value={priceRange[0]}
                             onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
                         />
                         <input
                             type="range"
                             min={0}
-                            max={100}
+                            max={100000}
                             value={priceRange[1]}
                             onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
                         />
@@ -163,10 +211,15 @@ const Filter = () => {
                             <p>No products available.</p>
                         ) : (
                             filteredProducts.map(product => (
-                                <div key={product.id} className='border rounded-lg p-4 mb-4 bg-white shadow-sm'>
+                                <div key={product._id} className='border relative rounded-lg p-4 mb-4 bg-white shadow-sm'>
                                     <img src={product.thumbnailImage} alt="" />
                                     <h3 className='text-lg font-semibold'>{product.name}</h3>
                                     <p className='text-gray-600'>${product.price}</p>
+                                    <div className='absolute bottom-5 right-5'>
+                                        <IconButton onClick={() => toggleWishlist(product._id)}>
+                                            {wishlist.includes(product._id) ? <Favorite color="error" /> : <FavoriteBorder />}
+                                        </IconButton>
+                                    </div>
                                 </div>
                             ))
                         )}

@@ -17,6 +17,7 @@ import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx';
 import UserDashboard from './Components/Credentials/userDashboard.jsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  
 import ProductCatalog from './Components/ProductCatalog/ProductCatalog.jsx';
+import AllProducts from './Components/ProductCatalog/AllProducts.jsx';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/AllProducts",
+        element: <AllProducts></AllProducts>,
       },
       {
         path: "/navbar/:cat",

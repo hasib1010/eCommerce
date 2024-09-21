@@ -22,7 +22,7 @@ const NavBar = () => {
                 }
                 const data = await res.json();
                 console.log(data.categories);
-                setCategories(data.categories);
+                setCategories(data.categories.slice(0, 4));
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
             }
@@ -77,11 +77,13 @@ const NavBar = () => {
                         (
 
                             <div className='flex justify-between items-center'>
+
                                 <div className='flex-1 flex gap-5'>
+                                    <NavLink className={"text-xl font-semibold hover:text-yellow-300 transition-colors"} to={"/AllProducts"}>All Products</NavLink>
                                     {
-                                        categories.map((item, index) => <NavLink key={index} to={`/navbar/${item}`} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>{item}</NavLink> )
+                                        categories.map((item, index) => <NavLink key={index} to={`/navbar/${item}`} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>{item}</NavLink>)
                                     }
-                                   
+
                                 </div>
                                 <div className='flex-1 flex items-center justify-center'>
                                     <Link to={'/'}>
@@ -101,11 +103,7 @@ const NavBar = () => {
                                                 <button onClick={() => logOut()} className='mt-1 bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition-colors text-xs'>Sign Out</button>
                                             </div>
                                         </div>
-                                    ) : (
-                                        <Link to={"/userDashboard"}>
-                                            <RxAvatar className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                                        </Link>
-                                    )}
+                                    ) :  ""}
                                     <div className='relative'>
                                         <LuShoppingCart
                                             onClick={toggleCart}
@@ -117,6 +115,11 @@ const NavBar = () => {
                                             </span>
                                         )}
                                     </div>
+                                    {
+                                        user ? "" : < Link to={"/login"}>
+                                            Log In
+                                        </Link>
+                                    }
                                 </div>
                             </div>)
                         :
@@ -139,12 +142,14 @@ const NavBar = () => {
 
             </div>
 
-            {isCartOpen && (
-                <div ref={cartRef} className='absolute right-0 top-20 bg-white shadow-lg rounded-lg'>
-                    <Cart isOpen={isCartOpen} onClose={closeCart} />
-                </div>
-            )}
-        </div>
+            {
+                isCartOpen && (
+                    <div ref={cartRef} className='absolute right-0 top-20 bg-white shadow-lg rounded-lg'>
+                        <Cart isOpen={isCartOpen} onClose={closeCart} />
+                    </div>
+                )
+            }
+        </div >
     );
 };
 
