@@ -9,8 +9,7 @@ import logo1 from './assets/logo/free.png'
 import logo2 from './assets/logo/pay.png'
 import logo3 from './assets/logo/return.png'
 import TodaysDeals from './Components/Today\'sdeals/TodaysDeals';
-import img from './assets/comingSoon.png'
-import Cart from './Components/Cart';
+import img from './assets/comingSoon.png' 
 function App() {
 
   return (

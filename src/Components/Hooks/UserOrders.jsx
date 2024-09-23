@@ -3,9 +3,9 @@ import { AuthContext } from '../Providers/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 
 const statusStyles = {
-    pending: 'bg-yellow-100 text-black',
-    shipped: 'bg-blue-100 text-black',
-    delivered: 'bg-green-100 text-black',
+    pending: 'bg-yellow-200 text-black',
+    shipped: 'bg-blue-200 text-black',
+    delivered: 'bg-green-200 text-black',
     cancelled: 'bg-red-200 text-black',
 };
 
@@ -24,15 +24,14 @@ const fetchProducts = async () => {
 const UserOrders = () => {
     const { user } = useContext(AuthContext);
     const userId = user.uid;
- 
+
     const { data: orders = [], refetch: refetchOrders } = useQuery({
         queryKey: ['orders', userId],
         queryFn: () => fetchOrders(userId),
         enabled: !!userId,
-        refetchInterval: 1000, 
+        refetchInterval: 1000,
     });
 
- 
     const { data: productsData = {} } = useQuery({
         queryKey: ['products'],
         queryFn: fetchProducts,
@@ -42,20 +41,15 @@ const UserOrders = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-6">Your Orders</h1>
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">Your Orders</h1>
+            <h2 className="text-xl text-center mb-4 text-gray-600">Welcome, {user?.displayName || "User"}!</h2>
+            <div className="overflow-x-auto shadow-lg rounded-lg">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                     <thead className="bg-gray-100 border-b">
                         <tr>
-                            <th className="py-3 px-4 text-left text-gray-600">Transaction ID</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Confirmed At</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Name</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Size</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Color</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Price</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Quantity</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Status</th>
-                            <th className="py-3 px-4 text-left text-gray-600">Thumbnail</th>
+                            {['Transaction ID', 'Confirmed At', 'Name', 'Size', 'Color', 'Price', 'Quantity', 'Status', 'Thumbnail'].map(header => (
+                                <th key={header} className="py-3 px-4 text-left text-gray-600">{header}</th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
@@ -75,20 +69,20 @@ const UserOrders = () => {
                             };
 
                             return (
-                                <tr key={index} className="border-b hover:bg-gray-50">
+                                <tr key={index} className="border-b hover:bg-gray-50 transition duration-200">
                                     <td className="py-3 border px-4 text-gray-800">{order.transactionId}</td>
                                     <td className="py-3 border px-4 text-gray-800">
                                         {order?.confirmedAt ? formatDate(order.confirmedAt) : "No date"}
                                     </td>
-                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.name} <br /></p>)}</td>
-                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.size} <br /></p>)}</td>
-                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.color} <br /></p>)}</td>
-                                    <td className="py-3 border px-4 text-gray-800">${order.price}</td>
+                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.name}</p>)}</td>
+                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.size}</p>)}</td>
+                                    <td className="py-3 border px-4 text-gray-800">{order.items.map(i => <p key={i._id}>{i.color}</p>)}</td>
+                                    <td className="py-3 border px-4 text-gray-800">${order.price.toFixed(2)}</td>
                                     <td className="py-3 border px-4 text-gray-800">{order.quantity}</td>
                                     <td className={`py-3 px-4 font-semibold ${statusClass} rounded`}>{order.status}</td>
                                     <td className="py-3 border px-4">
                                         <div className='flex flex-wrap'>
-                                            {order.items.map(i => <img key={i._id} className='h-14' src={i.thumbnailImage} alt={i.name} />)}
+                                            {order.items.map(i => <img key={i._id} className='h-14 w-14 object-cover rounded' src={i.thumbnailImage} alt={i.name} />)}
                                         </div>
                                     </td>
                                 </tr>
