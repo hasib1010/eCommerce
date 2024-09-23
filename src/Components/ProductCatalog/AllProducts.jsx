@@ -8,6 +8,7 @@ import Favorite from '@mui/icons-material/Favorite';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import { AuthContext } from '../Providers/AuthProvider';
 import Swal from 'sweetalert2';
+import { pink } from '@mui/material/colors';
 
 const AllProducts = () => {
     const { user } = useContext(AuthContext);
@@ -113,7 +114,7 @@ const AllProducts = () => {
                             {loading ? (
                                 <Skeleton animation="wave" width={300} variant="text" sx={{ fontSize: '5rem' }} />
                             ) : (
-                                <h4 className='font-semibold'>{`Total ${allProducts.length} Items Found`}</h4>
+                                <h4 className='font-semibold'>{`Total $${allProducts.length} Items Found`}</h4>
                             )}
                         </div>
                         <div className='flex mt-4'>
@@ -139,15 +140,15 @@ const AllProducts = () => {
                                 <h2 className='text-xl font-semibold mb-4'>Products</h2>
                                 <div className='grid grid-cols-3 place-items-center'>
                                     {(loading ? Array.from(new Array(9)) : allProducts).map((item, index) => (
-                                        <Box className="border rounded-md p-3" key={item ? item._id : index} sx={{ width: 290, height: 450, marginRight: 0.5, my: 5 }}>
+                                        <Box className="border rounded-md p-3 group" key={item ? item._id : index} sx={{ width: 290, marginRight: 0.5, my: 5 }}>
                                             <div className='flex flex-col gap-5'>
                                                 {item ? (
-                                                    <img
-                                                        className='w-fit mx-auto rounded-md'
-                                                        style={{ width: 256, height: 320 }}
-                                                        alt={item.title}
-                                                        src={item.hoverImageUrl}
-                                                    />
+                                                    <Link to={`/product/${item._id}`}>
+                                                        <div className='min-h-96 relative'>
+                                                            <img className='w-full absolute top-0 rounded-lg h-96 group-hover:opacity-0 duration-300 ease-in-out' src={item.catalogImages[0]} alt={item.name} />
+                                                            <img className='w-full rounded-lg h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
+                                                        </div>
+                                                    </Link>
                                                 ) : (
                                                     <Skeleton variant="rectangular" width={256} height={320} />
                                                 )}
@@ -165,12 +166,9 @@ const AllProducts = () => {
                                                             </Typography>
                                                         </div>
                                                         {/* Wishlist Icon */}
-                                                        <IconButton
-                                                            onClick={() => toggleWishlist(item._id)}
-                                                            color="default"
-                                                        >
+                                                        <IconButton onClick={() => toggleWishlist(item._id)} color="default">
                                                             {wishlist.includes(item._id) ? (
-                                                                <Favorite />
+                                                                <Favorite sx={{ color: pink[500] }}/>
                                                             ) : (
                                                                 <FavoriteBorder />
                                                             )}

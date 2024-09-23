@@ -1,5 +1,5 @@
 import React from 'react';
-import UserOrders from './UserOrders';
+import UserOrders from '../Hooks/UserOrders';
 
 const UserDashboard = () => {
     return (

@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../Providers/AuthProvider';
 import Favorite from '@mui/icons-material/Favorite';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Swal from 'sweetalert2';
-import { IconButton } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
+import useWishlist from '../../Hooks/UseWishlist';
 
 const Filter = () => {
+    const navigate = useNavigate();
     const { cat } = useParams();
     const { user } = useContext(AuthContext);
 
@@ -22,7 +24,7 @@ const Filter = () => {
     const [inStock, setInStock] = useState(false);
     const [allProducts, setAllProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [wishlist, setWishlist] = useState([]); // Wishlist state
+    const { wishlist, toggleWishlist } = useWishlist(); // Use the custom hook
 
     const fetchProducts = async () => {
         try {
@@ -36,23 +38,9 @@ const Filter = () => {
         }
     };
 
-    const fetchUserWishlist = async (userId) => {
-        try {
-            const res = await fetch(`http://localhost:3000/users/${userId}`);
-            if (!res.ok) throw new Error('Network response was not ok');
-            const data = await res.json();
-            setWishlist(data.wishList); // Set user's wishlist
-        } catch (error) {
-            console.error("Failed to fetch wishlist:", error);
-        }
-    };
-
     useEffect(() => {
         fetchProducts();
-        if (user) {
-            fetchUserWishlist(user.uid); // Fetch wishlist if user is logged in
-        }
-    }, [user]); // Run this effect when the user changes
+    }, []);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -106,36 +94,6 @@ const Filter = () => {
         setPriceRange([0, 5000]);
         setInStock(false);
         setFilteredProducts(allProducts);
-    };
-
-    const toggleWishlist = (productId) => {
-        if (!user) {
-            Swal.fire({ icon: 'warning', title: 'Have You Logged In?' });
-            return;
-        }
-
-        setWishlist(prevWishlist => {
-            const newWishlist = prevWishlist.includes(productId)
-                ? prevWishlist.filter(id => id !== productId)
-                : [...prevWishlist, productId];
-            updateWishlist(user.uid, newWishlist);
-            return newWishlist;
-        });
-    };
-
-    const updateWishlist = async (id, updatedWishlist) => {
-        const dataToSubmit = { wishList: updatedWishlist };
-        try {
-            const response = await fetch(`http://localhost:3000/users/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dataToSubmit)
-            });
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            Swal.fire({ title: 'Update Successful!', text: 'Your wishlist has been updated', icon: 'success' });
-        } catch (error) {
-            Swal.fire({ title: 'Error!', text: 'An error occurred while updating the wishlist', icon: 'error' });
-        }
     };
 
     return (
@@ -212,10 +170,14 @@ const Filter = () => {
                         ) : (
                             filteredProducts.map(product => (
                                 <div key={product._id} className='border relative rounded-lg p-4 mb-4 bg-white shadow-sm'>
-                                    <img src={product.thumbnailImage} alt="" />
-                                    <h3 className='text-lg font-semibold'>{product.name}</h3>
-                                    <p className='text-gray-600'>${product.price}</p>
-                                    <div className='absolute bottom-5 right-5'>
+                                    <Link to={`/product/${product._id}`}>
+                                        <img src={product.catalogImages[0]} alt={product.name} className='w-full rounded-lg h-96' />
+                                        <Typography ><h5 className='text-xl my-2'>
+                                            {product.name}
+                                        </h5></Typography>
+                                        <Typography>${parseFloat(product.price).toFixed(2)}</Typography>
+                                    </Link>
+                                    <div className='absolute bottom-3 right-9'>
                                         <IconButton onClick={() => toggleWishlist(product._id)}>
                                             {wishlist.includes(product._id) ? <Favorite color="error" /> : <FavoriteBorder />}
                                         </IconButton>
