@@ -13,7 +13,7 @@ const useWishlist = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/users/${user.uid}`);
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
             if (!response.ok) throw new Error('Failed to fetch wishlist');
             const data = await response.json();
             setWishlist(data.wishList || []);
@@ -48,7 +48,7 @@ const useWishlist = () => {
     const updateWishlist = async (id, updatedWishlist) => {
         const dataToSubmit = { wishList: updatedWishlist };
         try {
-            const response = await fetch(`http://localhost:3000/users/${id}`, {
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSubmit),

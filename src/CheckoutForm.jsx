@@ -69,7 +69,7 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
 
       console.log('Order Data:', orderData); 
       
-      const response = await fetch('http://localhost:3000/orders', {
+      const response = await fetch('https://e-commerce-server-alpha.vercel.app/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

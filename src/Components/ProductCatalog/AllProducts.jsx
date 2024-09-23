@@ -20,7 +20,7 @@ const AllProducts = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:3000/products/clothings");
+            const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings");
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             setAllProducts(data.products);
@@ -38,7 +38,7 @@ const AllProducts = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("http://localhost:3000/products/clothings/categories");
+                const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories);
@@ -53,7 +53,7 @@ const AllProducts = () => {
         if (!user) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/users/${user.uid}`);
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
             if (response.ok) {
                 const data = await response.json();
                 setWishlist(data.wishList || []);
@@ -85,7 +85,7 @@ const AllProducts = () => {
     const updateWishlist = async (id, updatedWishlist) => {
         const dataToSubmit = { wishList: updatedWishlist };
         try {
-            const response = await fetch(`http://localhost:3000/users/${id}`, {
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSubmit)
