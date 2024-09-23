@@ -13,10 +13,10 @@ import Success from './Components/Payments/Success.jsx';
 import AuthProvider from './Components/Providers/AuthProvider.jsx';
 import LogIn from './Components/Credentials/Login.jsx';
 import Registration from './Components/Credentials/Registration.jsx';
-import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx';
-import UserDashboard from './Components/Credentials/userDashboard.jsx';
+import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx'; 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  
 import ProductCatalog from './Components/ProductCatalog/ProductCatalog.jsx';
+import UserDashboard from "./Components/Credentials/UserDashboard.jsx"
 import AllProducts from './Components/ProductCatalog/AllProducts.jsx';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -54,7 +54,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/userDashboard",
-        element: <PrivateRoutes><UserDashboard></UserDashboard></PrivateRoutes>
+        element: <PrivateRoutes>
+          <UserDashboard></UserDashboard>
+        </PrivateRoutes>
       },
       {
         path: "/cancel",
