@@ -10,8 +10,12 @@ import slide3 from "../../assets/3.webp";
 import { Link } from 'react-router-dom';
 
 const Slider = () => {
+    const handleSliderClick = (event) => {
+        event.stopPropagation(); // Prevent click from bubbling up
+    };
+
     return (
-        <div className='relative'>
+        <div className='relative' onClick={handleSliderClick}>
             <Swiper
                 cssMode={true}
                 navigation={true}
@@ -37,7 +41,7 @@ const Slider = () => {
                                     Shop Now
                                 </Link>
                             </div>
-                            <div className="absolute inset-0 bg-black opacity-50 z-20" />  
+                            <div className="absolute inset-0 bg-black opacity-50 z-20" />
                         </div>
                     </SwiperSlide>
                 ))}
@@ -45,5 +49,4 @@ const Slider = () => {
         </div>
     );
 }
-
-export default Slider;
+export default Slider

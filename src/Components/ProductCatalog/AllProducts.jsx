@@ -14,6 +14,8 @@ import { AuthContext } from '../Providers/AuthProvider';
 import Swal from 'sweetalert2';
 import { pink } from '@mui/material/colors';
 
+import trendingIcon from "./../../assets/trending.gif"
+
 const AllProducts = () => {
     const { user } = useContext(AuthContext);
     const [categories, setCategories] = useState([]);
@@ -52,8 +54,8 @@ const AllProducts = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);  
-    
+    }, []);
+
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -229,7 +231,7 @@ const AllProducts = () => {
                                 <h2 className='text-xl font-semibold mb-4'>Products</h2>
                                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
                                     {(loading ? Array.from(new Array(9)) : currentProducts).map((item, index) => (
-                                        <Box className="border rounded-md p-3 group" key={item ? item._id : index} sx={{ width: '100%', marginRight: 0.5, my: 5 }}>
+                                        <Box className="border relative rounded-md p-3 group" key={item ? item._id : index} sx={{ width: '100%', marginRight: 0.5, my: 5 }}>
                                             <div className='flex flex-col lg:gap-5'>
                                                 {item ? (
                                                     <Link to={`/product/${item._id}`}>
@@ -238,6 +240,7 @@ const AllProducts = () => {
                                                             <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
                                                         </div>
                                                     </Link>
+
                                                 ) : (
                                                     <Skeleton variant="rectangular" width={256} height={320} />
                                                 )}
@@ -262,6 +265,15 @@ const AllProducts = () => {
                                                                 <FavoriteBorder />
                                                             )}
                                                         </IconButton>
+                                                        <div className="x">
+                                                            <p className={`absolute rounded-full -top-6 left-12 text-red-600 trendingTitle ${item?.isTrending ? "block" : "hidden"}`}>
+                                                                Trending Item
+                                                            </p>
+                                                            <img
+                                                                src={trendingIcon}
+                                                                className={`absolute rounded-full top-0 left-2 cursor-text ${item?.isTrending ? "block" : "hidden"}`}
+                                                            />
+                                                        </div>
                                                     </Box>
                                                 ) : (
                                                     <Box sx={{ pt: 0.5 }}>

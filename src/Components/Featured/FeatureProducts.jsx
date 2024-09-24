@@ -5,7 +5,7 @@ import { AuthContext } from '../Providers/AuthProvider';
 import useWishlist from '../Hooks/UseWishlist';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { pink } from '@mui/material/colors';
-
+import trendingIcon from "./../../assets/trending.gif"
 const FeatureProducts = () => {
     const { user } = useContext(AuthContext);
     const [products, setProducts] = useState([]);
@@ -47,7 +47,7 @@ const FeatureProducts = () => {
     }
 
     return (
-        <div className="grid lg:grid-cols-4 grid-cols-2 lg:gap-10 gap-3">
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 lg:gap-10 gap-3">
             {products.map((product) => (
                 <Box key={product._id} className="relative flex flex-col justify-between p-4 group border-gray-200 rounded-md overflow-hidden border">
                     <Link to={`/product/${product._id}`}>
@@ -62,6 +62,15 @@ const FeatureProducts = () => {
                         <IconButton onClick={() => toggleWishlist(product._id)}>
                             {wishlist.includes(product._id) ? <Favorite sx={{ color: pink[500] }} /> : <FavoriteBorder />}
                         </IconButton></div>
+                    <div className="x">
+                        <p className={`absolute rounded-full top-0 left-12 bg-white text-red-600 trendingTitle ${product?.isTrending ? "block" : "hidden"}`}>
+                            Trending Item
+                        </p>
+                        <img
+                            src={trendingIcon}
+                            className={`absolute cursor-text rounded-full top-0 left-0 ${product?.isTrending ? "block" : "hidden"}`}
+                        />
+                    </div>
                 </Box>
             ))}
         </div>

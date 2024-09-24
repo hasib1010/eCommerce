@@ -10,15 +10,21 @@ import { AuthContext } from './Components/Providers/AuthProvider';
 import { GoHomeFill } from "react-icons/go";
 import { FaShopLock } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
+import NavbarMenu from './NavbarMenu';
 
 const NavBar = () => {
     const [categories, setCategories] = useState([]);
+    const [openCategories, setOpenCategories] = useState([]);
     const { user, logOut } = useContext(AuthContext);
     const [searchBar, setSearchBar] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
     const { state } = useCart();
+
     const cartRef = useRef(null);
+    const dropdownRef = useRef(null); // Ref for dropdown
+    const menuRef = useRef(null); // Ref for mobile menu
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -26,7 +32,8 @@ const NavBar = () => {
                 const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
-                setCategories(data.categories);
+                setCategories(data.categories.slice(0, 3));
+                setOpenCategories(data.categories);
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
             }
@@ -50,16 +57,24 @@ const NavBar = () => {
             if (cartRef.current && !cartRef.current.contains(event.target) && isCartOpen) {
                 closeCart();
             }
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target) && isDropdownOpen) {
+                setIsDropdownOpen(false);
+            }
+            if (menuRef.current && !menuRef.current.contains(event.target) && isMenuOpen) {
+                closeMenu();
+            }
         };
 
-        if (isCartOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
+        document.addEventListener('mousedown', handleClickOutside);
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isCartOpen]);
+    }, [isCartOpen, isDropdownOpen, isMenuOpen]);
+
+    const handleAvatarClick = () => {
+        setIsDropdownOpen(prev => !prev);
+    };
 
     return (
         <div className='shadow-lg lg:sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
@@ -78,12 +93,11 @@ const NavBar = () => {
                         <CgProfile className='text-3xl' />
                         <p className='text-xs'>Profile</p>
                     </Link>
-                    <div className='relative mt-2 lg:hidden flex flex-col items-center '>
-                         
-                        <LuShoppingCart onClick={toggleCart} className='text-3xl  text-black  ' />
-                        <p className='text-xs text-black'>Profile</p>
+                    <div className='relative mt-2 lg:hidden flex flex-col items-center'>
+                        <LuShoppingCart onClick={toggleCart} className='text-3xl text-black' />
+                        <p className='text-xs text-black'>Cart</p>
                         {cartItemCount > 0 && (
-                            <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xm max-h-7 min-w-6 text-center rounded-full'>
+                            <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xs max-h-7 min-w-6 text-center rounded-full'>
                                 {cartItemCount}
                             </span>
                         )}
@@ -99,12 +113,13 @@ const NavBar = () => {
 
                 {/* Categories */}
                 <div className='flex-1 gap-4 justify-center md:justify-start hidden lg:flex'>
-                    <NavLink className={"text-xl font-semibold hover:text-yellow-300 transition-colors"} to={"/AllProducts"}>All Products</NavLink>
+                    <NavLink className={"text-lg font-semibold hover:text-yellow-300 transition-colors"} to={"/AllProducts"}>All Products</NavLink>
                     {categories.map((item, index) => (
-                        <NavLink key={index} to={`/navbar/${item}`} className='text-xl font-semibold hover:text-yellow-300 transition-colors'>
+                        <NavLink key={index} to={`/navbar/${item}`} className='text-lg font-semibold hover:text-yellow-300 transition-colors'>
                             {item}
                         </NavLink>
                     ))}
+                    <NavbarMenu openCategories={openCategories}></NavbarMenu>
                 </div>
 
                 {/* Logo */}
@@ -119,10 +134,10 @@ const NavBar = () => {
                     <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     <LuShoppingCart onClick={toggleCart} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     {cartItemCount > 0 && (
-                            <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xm max-h-7 min-w-6 text-center rounded-full'>
-                                {cartItemCount}
-                            </span>
-                        )}
+                        <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xs max-h-7 min-w-6 text-center rounded-full'>
+                            {cartItemCount}
+                        </span>
+                    )}
                 </div>
 
                 {/* User Options */}
@@ -130,19 +145,21 @@ const NavBar = () => {
                     <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     <IoLanguageSharp className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     {user ? (
-                        <div className='flex items-center gap-2'>
-                            <Link to={"/userDashboard"}>
+                        <div className='relative flex items-center gap-2 dropdown' ref={dropdownRef}>
+                            <div onClick={handleAvatarClick}>
                                 <img className='h-8 w-8 rounded-full border-2 border-white' src={user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"} alt="User Avatar" />
-                            </Link>
-                            <div className='flex flex-col items-center text-sm'>
-                                <p className='text-white'>{user.displayName}</p>
-                                <button onClick={logOut} className='mt-1 bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition-colors text-xs'>Sign Out</button>
                             </div>
+                            {isDropdownOpen && (
+                                <div className='absolute -right-16 top-8 mt-2 bg-white text-black rounded shadow-lg z-50 p-2'>
+                                    <Link to="/userDashboard" className='block py-1 hover:bg-gray-200'>Profile</Link>
+                                    <button onClick={logOut} className='block w-full text-left py-1 text-red-600 hover:bg-gray-200'>Sign Out</button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <Link to={"/login"} className='text-white text-lg hover:text-yellow-300'>Log In</Link>
                     )}
-                    <div className='relative'>
+                    <div className='relative' ref={cartRef}>
                         <LuShoppingCart onClick={toggleCart} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                         {cartItemCount > 0 && (
                             <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full'>
@@ -155,7 +172,7 @@ const NavBar = () => {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className='fixed inset-0 bg-white text-black z-50 flex flex-col p-4'>
+                <div ref={menuRef} className='fixed inset-0 bg-white text-black z-50 flex flex-col p-4'>
                     <div className='flex justify-between items-center'>
                         <h2 className='text-2xl font-bold'>Menu</h2>
                         <button onClick={closeMenu}>
@@ -175,12 +192,13 @@ const NavBar = () => {
                     <div className='mt-4'>
                         <IoLanguageSharp className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
                         {user ? (
-                            <div onClick={closeMenu} className='flex items-center gap-2 mt-2 '>
-                                <Link to={"/userDashboard"}>
+                            <div onClick={closeMenu} className='flex items-center gap-2 mt-2'>
+                                <Link>
                                     <img className='h-8 w-8 rounded-full border-2 border-black' src={user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"} alt="User Avatar" />
                                 </Link>
                                 <div className='flex flex-col items-center text-sm'>
                                     <p className='text-black'>{user.displayName}</p>
+                                    <Link to="/userDashboard" className='bg-blue-500 text-black py-1 px-2 rounded-md hover:bg-blue-600 transition-colors text-xs'>Dashboard</Link>
                                     <button onClick={logOut} className='mt-1 bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition-colors text-xs'>Sign Out</button>
                                 </div>
                             </div>

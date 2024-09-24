@@ -1,14 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
 
-  /* <uniquifier>: Use a unique and descriptive class name
+/* <uniquifier>: Use a unique and descriptive class name
  <weight>: Use a value from 100 to 700 */
 
 .josefin-sans-font {
   font-family: "Josefin Sans", sans-serif !important;
-  
 }
 
 .text-with-outline {
@@ -17,9 +15,6 @@
   font-weight: semibold;
   padding: 10px 0 10px 5px;
 }
-
- 
- 
 
 .p-carousel-prev,
 .p-carousel-next {
@@ -41,7 +36,7 @@
   right: -25px; /* Moves button outside the right border */
 }
 
-.p-icon { 
+.p-icon {
   height: 50px !important;
   width: 50px !important;
   background-color: rgb(255, 255, 255);
@@ -58,13 +53,33 @@
 .p-carousel-next:hover .p-icon {
   background-color: lightgray;
 }
- 
 
-.active{ 
-  color: yellow;
+.active {
+  color: rgb(155, 255, 42);
+  border-radius: 10px;
 }
- 
+
 .colored-toast.swal2-icon-success {
   background-color: #a5dc86 !important;
   color: black;
+}
+
+/* This class is for the dropdown transition */
+.transition-opacity {
+  transition: opacity 0.3s ease;
+}
+
+/* Optional styling for a smoother appearance */
+.bg-white {
+  transition: all 0.3s ease;
+}
+
+ 
+
+.trendingTitle {
+  display: none; /* Hide the text by default */
+}
+
+.x:hover .trendingTitle {
+  display: block; /* Show text when hovering over the parent div */
 }

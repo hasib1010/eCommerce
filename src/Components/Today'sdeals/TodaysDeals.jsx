@@ -20,7 +20,7 @@ const TodaysDeals = () => {
             numScroll: 1
         },
         {
-            breakpoint: '767px',
+            breakpoint: '780px',
             numVisible: 2,
             numScroll: 1
         },
