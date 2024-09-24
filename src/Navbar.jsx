@@ -7,6 +7,9 @@ import { HiMenu } from 'react-icons/hi';
 import Cart from './Components/Cart';
 import { useCart } from './Components/Providers/CartProvider';
 import { AuthContext } from './Components/Providers/AuthProvider';
+import { GoHomeFill } from "react-icons/go";
+import { FaShopLock } from "react-icons/fa6";
+import { CgProfile } from "react-icons/cg";
 
 const NavBar = () => {
     const [categories, setCategories] = useState([]);
@@ -21,40 +24,30 @@ const NavBar = () => {
         const fetchCategories = async () => {
             try {
                 const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories);
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
             }
         };
-
         fetchCategories();
     }, []);
 
-    const toggleCart = () => {
-        setIsCartOpen(!isCartOpen);
-    };
-
-    const closeCart = () => {
-        setIsCartOpen(false);
-    };
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    const closeMenu = () => {
-        setIsMenuOpen(false);
+    const closeCart = () => setIsCartOpen(false);
+    const toggleCart = () => setIsCartOpen(prev => !prev);
+    const closeMenu = () => setIsMenuOpen(false);
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const toggleSearch = () => {
+        setSearchBar(true);
+        closeMenu();
     };
 
     const cartItemCount = state.items.reduce((total, item) => total + item.quantity, 0);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (cartRef.current && !cartRef.current.contains(event.target)) {
+            if (cartRef.current && !cartRef.current.contains(event.target) && isCartOpen) {
                 closeCart();
             }
         };
@@ -69,8 +62,36 @@ const NavBar = () => {
     }, [isCartOpen]);
 
     return (
-        <div className='shadow-lg sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
-            <div className='container mx-auto px-4 py-4 flex   md:flex-row items-center justify-between'>
+        <div className='shadow-lg lg:sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
+            {/* Footer Navbar for Small Devices */}
+            <div className='fixed bottom-0 left-0 right-0 mt-28 bg-white shadow-lg lg:hidden z-50'>
+                <div className='flex items-center pt-3 justify-around p-2'>
+                    <Link to="/" className='text-center text-black'>
+                        <GoHomeFill className='text-3xl' />
+                        <p className='text-xs'>Home</p>
+                    </Link>
+                    <Link to="/AllProducts" className='text-center text-black'>
+                        <FaShopLock className='text-3xl' />
+                        <p className='text-xs'>Shop</p>
+                    </Link>
+                    <Link to="/userDashboard" className='text-center text-black'>
+                        <CgProfile className='text-3xl' />
+                        <p className='text-xs'>Profile</p>
+                    </Link>
+                    <div className='relative mt-2 lg:hidden flex flex-col items-center '>
+                         
+                        <LuShoppingCart onClick={toggleCart} className='text-3xl  text-black  ' />
+                        <p className='text-xs text-black'>Profile</p>
+                        {cartItemCount > 0 && (
+                            <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xm max-h-7 min-w-6 text-center rounded-full'>
+                                {cartItemCount}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className='container mx-auto px-4 py-4 flex md:flex-row items-center justify-between'>
                 {/* Hamburger Menu */}
                 <div className='flex lg:hidden'>
                     <HiMenu onClick={toggleMenu} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
@@ -93,9 +114,20 @@ const NavBar = () => {
                     </Link>
                 </div>
 
-                {/* Search and User Options */}
+                {/* Cart and Search Icons */}
+                <div className='relative mt-2 lg:hidden flex items-center gap-4'>
+                    <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
+                    <LuShoppingCart onClick={toggleCart} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
+                    {cartItemCount > 0 && (
+                            <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xm max-h-7 min-w-6 text-center rounded-full'>
+                                {cartItemCount}
+                            </span>
+                        )}
+                </div>
+
+                {/* User Options */}
                 <div className='flex-1 items-center justify-end gap-4 hidden lg:flex'>
-                    <IoMdSearch onClick={() => setSearchBar(true)} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
+                    <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     <IoLanguageSharp className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
                     {user ? (
                         <div className='flex items-center gap-2'>
@@ -141,12 +173,9 @@ const NavBar = () => {
 
                     {/* Search and User Options in Mobile Menu */}
                     <div className='mt-4'>
-                        <div className='flex items-center justify-between'>
-                            <IoMdSearch onClick={() => setSearchBar(true)} className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                            <IoLanguageSharp className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                        </div>
+                        <IoLanguageSharp className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
                         {user ? (
-                            <div className='flex items-center gap-2 mt-2'>
+                            <div onClick={closeMenu} className='flex items-center gap-2 mt-2 '>
                                 <Link to={"/userDashboard"}>
                                     <img className='h-8 w-8 rounded-full border-2 border-black' src={user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"} alt="User Avatar" />
                                 </Link>
@@ -156,16 +185,8 @@ const NavBar = () => {
                                 </div>
                             </div>
                         ) : (
-                            <Link to={"/login"} className='text-black text-lg hover:text-yellow-300 mt-2'>Log In</Link>
+                            <Link onClick={closeMenu} to={"/login"} className='text-black text-lg hover:text-yellow-300 mt-2'>Log In</Link>
                         )}
-                        <div className='relative mt-2'>
-                            <LuShoppingCart onClick={toggleCart} className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                            {cartItemCount > 0 && (
-                                <span className='absolute -top-2 -right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full'>
-                                    {cartItemCount}
-                                </span>
-                            )}
-                        </div>
                     </div>
                 </div>
             )}
@@ -188,7 +209,7 @@ const NavBar = () => {
 
             {/* Cart Component */}
             {isCartOpen && (
-                <div ref={cartRef} className='absolute right-0 top-20 bg-white shadow-lg rounded-lg'>
+                <div ref={cartRef} className='absolute right-0 top-20 bg-white shadow-lg rounded-lg z-50'>
                     <Cart isOpen={isCartOpen} onClose={closeCart} />
                 </div>
             )}

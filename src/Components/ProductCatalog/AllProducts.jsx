@@ -6,6 +6,10 @@ import Skeleton from '@mui/material/Skeleton';
 import IconButton from '@mui/material/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useMediaQuery } from '@mui/material';
 import { AuthContext } from '../Providers/AuthProvider';
 import Swal from 'sweetalert2';
 import { pink } from '@mui/material/colors';
@@ -16,6 +20,21 @@ const AllProducts = () => {
     const [allProducts, setAllProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [wishlist, setWishlist] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage, setProductsPerPage] = useState(12); // Default for large screens
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    // Detect if the screen size is small
+    const isSmallScreen = useMediaQuery('(max-width: 1024px)');
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -33,7 +52,8 @@ const AllProducts = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, []);  
+    
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -97,6 +117,39 @@ const AllProducts = () => {
         }
     };
 
+    // Get current products for pagination
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = allProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Pagination component
+    const Pagination = ({ totalProducts, productsPerPage }) => {
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(totalProducts / productsPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        return (
+            <nav className="flex justify-center mt-4">
+                <ul className="flex space-x-2">
+                    {pageNumbers.map(number => (
+                        <li key={number}>
+                            <button
+                                onClick={() => paginate(number)}
+                                className={`px-3 py-2 border rounded ${number === currentPage ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+                            >
+                                {number}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+        );
+    };
+
     return (
         <div>
             <div className='h-80 flex flex-col border-b justify-end bg-[url("https://t3.ftcdn.net/jpg/06/36/44/26/360_F_636442646_II8z4yhYbPoea8P6HoimUblo6ZQXzUXY.jpg")]'>
@@ -109,52 +162,88 @@ const AllProducts = () => {
             </div>
             <div>
                 <div className='border-t'>
-                    <div className='min-w-[500px] mr-10 px-4'>
+                    <div className='lg:min-w-[500px] w-full mr-10 px-4'>
                         <div className='border-b py-5 text-2xl flex justify-between items-center'>
                             {loading ? (
                                 <Skeleton animation="wave" width={300} variant="text" sx={{ fontSize: '5rem' }} />
                             ) : (
-                                <h4 className='font-semibold'>{`Total $${allProducts.length} Items Found`}</h4>
+                                <h4 className='font-semibold'>{`Total ${allProducts.length} Items Found`}</h4>
                             )}
                         </div>
-                        <div className='flex mt-4'>
-                            <div className='flex flex-col border bg-white rounded-lg shadow-md min-w-[450px] p-4'>
+                        <div className='flex flex-wrap lg:flex-nowrap mt-4'>
+                            {/* Category Section */}
+                            <div className='flex flex-col border bg-white rounded-lg shadow-md w-full lg:min-w-[450px] lg:w-[30%] p-4'>
                                 <div className='border-b py-4'>
                                     <h4 className='text-2xl font-semibold cursor-pointer flex justify-between items-center'>
                                         Category
                                     </h4>
-                                    {loading ? (
-                                        Array.from(new Array(9)).map((_, index) => (
-                                            <Skeleton key={index} animation="wave" width={300} variant="text" sx={{ fontSize: '3rem' }} />
-                                        ))
+
+                                    {/* Display categories differently based on screen size */}
+                                    {isSmallScreen ? (
+                                        <>
+                                            <IconButton onClick={handleMenuClick}>
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                            <Menu
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleMenuClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                {loading ? (
+                                                    Array.from(new Array(9)).map((_, index) => (
+                                                        <Skeleton key={index} animation="wave" width={300} variant="text" sx={{ fontSize: '3rem' }} />
+                                                    ))
+                                                ) : (
+                                                    categories.map((item, index) => (
+                                                        <MenuItem key={index} onClick={handleMenuClose}>
+                                                            <Link to={`/navbar/${item}`}>
+                                                                <h4 className='font-semibold text-2xl mt-3 text-slate-700 hover:bg-slate-100 hover:text-slate-900'>{item}</h4>
+                                                            </Link>
+                                                        </MenuItem>
+                                                    ))
+                                                )}
+                                            </Menu>
+                                        </>
                                     ) : (
-                                        categories.map((item, index) => (
-                                            <Link key={index} to={`/navbar/${item}`}>
-                                                <h4 className='font-semibold text-2xl mt-10 border px-2 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900'>{item}</h4>
-                                            </Link>
-                                        ))
+                                        <>
+                                            {loading ? (
+                                                Array.from(new Array(9)).map((_, index) => (
+                                                    <Skeleton key={index} animation="wave" width={300} variant="text" sx={{ fontSize: '3rem' }} />
+                                                ))
+                                            ) : (
+                                                categories.map((item, index) => (
+                                                    <Link key={index} to={`/navbar/${item}`}>
+                                                        <h4 className='font-semibold text-2xl lg:mt-10 mt-3 border px-2 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900'>{item}</h4>
+                                                    </Link>
+                                                ))
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
-                            <div className='container mx-auto border-l p-10 bg-gray-50 rounded-lg shadow-md'>
+                            {/* Products Section */}
+                            <div className='container mx-auto border-l p-10 bg-gray-50 rounded-lg shadow-md w-full lg:w-[70%]'>
                                 <h2 className='text-xl font-semibold mb-4'>Products</h2>
-                                <div className='grid grid-cols-3 place-items-center'>
-                                    {(loading ? Array.from(new Array(9)) : allProducts).map((item, index) => (
-                                        <Box className="border rounded-md p-3 group" key={item ? item._id : index} sx={{ width: 290, marginRight: 0.5, my: 5 }}>
-                                            <div className='flex flex-col gap-5'>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
+                                    {(loading ? Array.from(new Array(9)) : currentProducts).map((item, index) => (
+                                        <Box className="border rounded-md p-3 group" key={item ? item._id : index} sx={{ width: '100%', marginRight: 0.5, my: 5 }}>
+                                            <div className='flex flex-col lg:gap-5'>
                                                 {item ? (
                                                     <Link to={`/product/${item._id}`}>
-                                                        <div className='min-h-96 relative'>
-                                                            <img className='w-full absolute top-0 rounded-lg h-96 group-hover:opacity-0 duration-300 ease-in-out' src={item.catalogImages[0]} alt={item.name} />
-                                                            <img className='w-full rounded-lg h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
+                                                        <div className='lg:min-h-96 relative'>
+                                                            <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={item.catalogImages[0]} alt={item.name} />
+                                                            <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
                                                         </div>
                                                     </Link>
                                                 ) : (
                                                     <Skeleton variant="rectangular" width={256} height={320} />
                                                 )}
                                                 {item ? (
-                                                    <Box sx={{ pr: 2 }}>
-                                                        <div className='flex flex-col gap-4'>
+                                                    <Box className="flex justify-between items-center" sx={{ pr: 2 }}>
+                                                        <div className='flex lg:flex-col items-center gap-4'>
                                                             <Typography gutterBottom variant="body2">
                                                                 <h3 className='text-md mt-3 font-bold'>{item.name}</h3>
                                                             </Typography>
@@ -168,7 +257,7 @@ const AllProducts = () => {
                                                         {/* Wishlist Icon */}
                                                         <IconButton onClick={() => toggleWishlist(item._id)} color="default">
                                                             {wishlist.includes(item._id) ? (
-                                                                <Favorite sx={{ color: pink[500] }}/>
+                                                                <Favorite sx={{ color: pink[500] }} />
                                                             ) : (
                                                                 <FavoriteBorder />
                                                             )}
@@ -184,6 +273,8 @@ const AllProducts = () => {
                                         </Box>
                                     ))}
                                 </div>
+                                {/* Pagination */}
+                                <Pagination totalProducts={allProducts.length} productsPerPage={productsPerPage} />
                             </div>
                         </div>
                     </div>

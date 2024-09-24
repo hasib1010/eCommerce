@@ -3,21 +3,22 @@ import { Outlet } from 'react-router-dom';
 import Marquee from "react-fast-marquee";
 import NavBar from './Navbar';
 import { ReactLenis, useLenis } from '@studio-freight/react-lenis'
+import Footer from './Components/Footer/Footer';
 
 
 const Layout = () => {
     const lenis = useLenis(({ scroll }) => {
-         
+
     })
 
     return (
         <ReactLenis root
-        options={{
-            smooth: true,
-            duration: 1.8, 
-        }}
+            options={{
+                smooth: true,
+                duration: 1.8,
+            }}
         >
-            <div className='relative'>
+            <div className='relative pb-[80px] lg:pb-0'  >
 
                 <div className='w-full  bg-[#8567e6]'>
                     <Marquee className='py-1'>
@@ -43,13 +44,14 @@ const Layout = () => {
                         </div>
                     </Marquee>
                 </div>
- 
+
                 <NavBar />
- 
+
                 <div className=' '>
                     <Outlet />
                 </div>
- 
+                <Footer></Footer>
+
             </div>
         </ReactLenis>
     );

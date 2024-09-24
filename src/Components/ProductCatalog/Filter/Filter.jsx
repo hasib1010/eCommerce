@@ -1,30 +1,31 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../../Providers/AuthProvider';
+import { Link, useParams } from 'react-router-dom';
+import { IconButton, Typography } from '@mui/material';
 import Favorite from '@mui/icons-material/Favorite';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
-import Swal from 'sweetalert2';
-import { IconButton, Typography } from '@mui/material';
 import useWishlist from '../../Hooks/UseWishlist';
 
 const Filter = () => {
-    const navigate = useNavigate();
     const { cat } = useParams();
-    const { user } = useContext(AuthContext);
-
     const [categories, setCategories] = useState([]);
     const [collapsed, setCollapsed] = useState({
         category: true,
         price: true,
         availability: true,
-        trending: true,
     });
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [priceRange, setPriceRange] = useState([0, 5000]);
+    const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
     const [inStock, setInStock] = useState(false);
     const [allProducts, setAllProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const { wishlist, toggleWishlist } = useWishlist(); // Use the custom hook
+    const { wishlist, toggleWishlist } = useWishlist();
+
+    const priceRanges = [
+        { label: '$0 - $100', range: [0, 100] },
+        { label: '$100 - $500', range: [100, 500] },
+        { label: '$500 - $1000', range: [500, 1000] },
+        { label: '$1000 - $5000', range: [1000, 5000] },
+    ];
 
     const fetchProducts = async () => {
         try {
@@ -65,13 +66,13 @@ const Filter = () => {
     useEffect(() => {
         const filtered = allProducts.filter(product => {
             const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-            const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1];
+            const priceMatch = selectedPriceRanges.length === 0 || selectedPriceRanges.some(range => product.price >= range[0] && product.price <= range[1]);
             const stockMatch = !inStock || product.stock > 0;
 
             return categoryMatch && priceMatch && stockMatch;
         });
         setFilteredProducts(filtered);
-    }, [selectedCategories, priceRange, inStock, allProducts]);
+    }, [selectedCategories, selectedPriceRanges, inStock, allProducts]);
 
     const toggleCollapse = (section) => {
         setCollapsed(prev => ({ ...prev, [section]: !prev[section] }));
@@ -89,9 +90,19 @@ const Filter = () => {
         });
     };
 
+    const handlePriceRangeChange = (range) => {
+        setSelectedPriceRanges(prev => {
+            if (prev.some(selectedRange => selectedRange[0] === range[0] && selectedRange[1] === range[1])) {
+                return prev.filter(selectedRange => selectedRange[0] !== range[0] || selectedRange[1] !== range[1]);
+            } else {
+                return [...prev, range];
+            }
+        });
+    };
+
     const clearFilters = () => {
         setSelectedCategories([]);
-        setPriceRange([0, 5000]);
+        setSelectedPriceRanges([]);
         setInStock(false);
         setFilteredProducts(allProducts);
     };
@@ -134,22 +145,29 @@ const Filter = () => {
                     </div>
                     {/* Price Range Filter */}
                     <div className='border-b py-4'>
-                        <h4 className='text-2xl font-semibold'>Price Range</h4>
-                        <input
-                            type="range"
-                            min={0}
-                            max={100000}
-                            value={priceRange[0]}
-                            onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                        />
-                        <input
-                            type="range"
-                            min={0}
-                            max={100000}
-                            value={priceRange[1]}
-                            onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                        />
+                        <h4 className='text-2xl font-semibold cursor-pointer flex justify-between items-center' onClick={() => toggleCollapse('price')}>
+                            Price Range <span>{collapsed.price ? '▼' : '▲'}</span>
+                        </h4>
+                        {!collapsed.price && (
+                            <div className='py-2'>
+                                {priceRanges.map((range, index) => (
+                                    <div key={index} className='flex items-center gap-3 my-2 text-lg'>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPriceRanges.some(selectedRange => selectedRange[0] === range.range[0] && selectedRange[1] === range.range[1])}
+                                            onChange={() => handlePriceRangeChange(range.range)}
+                                            className='cursor-pointer'
+                                            id={range.label}
+                                        />
+                                        <label htmlFor={range.label} className='cursor-pointer hover:text-blue-500 transition'>
+                                            {range.label}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
+                    {/* In Stock Filter */}
                     <div className='border-b py-4'>
                         <h4 className='text-2xl font-semibold'>In Stock</h4>
                         <input
@@ -172,7 +190,7 @@ const Filter = () => {
                                 <div key={product._id} className='border relative rounded-lg p-4 mb-4 bg-white shadow-sm'>
                                     <Link to={`/product/${product._id}`}>
                                         <img src={product.catalogImages[0]} alt={product.name} className='w-full rounded-lg h-96' />
-                                        <Typography ><h5 className='text-xl my-2'>
+                                        <Typography><h5 className='text-xl my-2'>
                                             {product.name}
                                         </h5></Typography>
                                         <Typography>${parseFloat(product.price).toFixed(2)}</Typography>

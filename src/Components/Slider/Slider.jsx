@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { Navigation, Pagination, Mousewheel, Keyboard, Autoplay } from 'swiper/modules'; // Import Autoplay
+import { Navigation, Pagination, Mousewheel, Keyboard, Autoplay } from 'swiper/modules';
 import slide1 from "../../assets/1.webp";
 import slide2 from "../../assets/2.webp";
 import slide3 from "../../assets/3.webp";
@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 const Slider = () => {
     return (
-        <div className=' '>
+        <div className='relative'>
             <Swiper
                 cssMode={true}
                 navigation={true}
@@ -23,52 +23,24 @@ const Slider = () => {
                     delay: 3000,
                     disableOnInteraction: false,
                 }}
-                slidesPerView={1} 
+                slidesPerView={1}
                 modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]}
                 className="mySwiper"
             >
-                <SwiperSlide>
-                    <div
-                        className="relative bg-cover"
-                        style={{ backgroundImage: `url(${slide1})` }} // Use inline style for background image
-                    >
-                        <div className='  z-50   min-h-screen justify-center flex flex-col items-center gap-5'>
-                            <h4 className='text-5xl font-semibold text-black'>Spring Sale</h4>
-                            <p className='text-xl font-semibold text-black'>Don't miss this opportunity.</p>
-                            <Link className='bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white px-3 py-5 text-3xl font-extrasemibold rounded-xl'>
-                                Shop Now
-                            </Link>
+                {[slide1, slide2, slide3].map((slide, index) => (
+                    <SwiperSlide key={index}>
+                        <div className="relative lg:bg-cover bg-center bg-cover lg:h-full" style={{ backgroundImage: `url(${slide})` }}>
+                            <div className='z-30 lg:min-h-screen py-20 flex flex-col justify-center items-center gap-5 text-center'>
+                                <h4 className='lg:text-5xl text-xl z-30 font-semibold text-white'>Spring Sale</h4>
+                                <p className='lg:text-xl z-30 font-semibold text-white'>Don't miss this opportunity.</p>
+                                <Link to={'/AllProducts'} className='bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white px-6 py-3 text-2xl font-extrabold rounded-xl z-30'>
+                                    Shop Now
+                                </Link>
+                            </div>
+                            <div className="absolute inset-0 bg-black opacity-50 z-20" />  
                         </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div
-                        className="relative bg-cover"
-                        style={{ backgroundImage: `url(${slide2})` }} // Use inline style for background image
-                    >
-                        <div className='gap-5 z-50 flex flex-col min-h-screen justify-center items-center'>
-                            <h4 className='text-5xl font-semibold text-white'>Find Your Style</h4>
-                            <p className='text-xl font-semibold text-white'>Order for the latest Trends</p>
-                            <Link className='bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white px-3 py-5 text-3xl font-extrasemibold rounded-xl'>
-                                Shop Now
-                            </Link>
-                        </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div
-                        className="relative bg-cover h-full"
-                        style={{ backgroundImage: `url(${slide3})` }} // Use inline style for background image
-                    >
-                        <div className=' flex flex-col min-h-screen justify-center items-center gap-5'>
-                            <h4 className='text-5xl font-semibold text-black'>Spring Sale</h4>
-                            <p className='text-xl font-semibold text-black'>Don't miss this opportunity.</p>
-                            <Link className='bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white px-3 py-5 text-3xl font-extrasemibold rounded-xl'>
-                                Shop Now
-                            </Link>
-                        </div>
-                    </div>
-                </SwiperSlide>
+                    </SwiperSlide>
+                ))}
             </Swiper>
         </div>
     );

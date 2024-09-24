@@ -34,7 +34,7 @@ const FeatureProducts = () => {
 
     if (loading) {
         return (
-            <div className='grid grid-cols-4 gap-10'>
+            <div className='grid lg:grid-cols-4 grid-cols-2 gap-10'>
                 {Array.from({ length: 9 }, (_, index) => (
                     <Skeleton key={index} variant="rectangular" width={"100%"} height={310} />
                 ))}
@@ -47,13 +47,13 @@ const FeatureProducts = () => {
     }
 
     return (
-        <div className="grid grid-cols-4 gap-10">
+        <div className="grid lg:grid-cols-4 grid-cols-2 lg:gap-10 gap-3">
             {products.map((product) => (
-                <Box key={product._id} className="relative p-4 group border-gray-200 rounded-md overflow-hidden border">
+                <Box key={product._id} className="relative flex flex-col justify-between p-4 group border-gray-200 rounded-md overflow-hidden border">
                     <Link to={`/product/${product._id}`}>
-                        <div className='min-h-96 relative'>
-                            <img className='w-full absolute top-0 rounded-lg h-96 group-hover:opacity-0 duration-300 ease-in-out' src={product.catalogImages[0]} alt={product.name} />
-                            <img className='w-full rounded-lg h-96 group-hover:opacity-100 duration-300 ease-in-out' src={product.catalogImages[1]} alt={product.name} />
+                        <div className='lg:min-h-96 relative'>
+                            <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={product.catalogImages[0]} alt={product.name} />
+                            <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={product.catalogImages[1]} alt={product.name} />
                         </div>
 
                     </Link>

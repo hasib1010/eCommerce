@@ -73,7 +73,7 @@ const TodaysDeals = () => {
     };
 
     return (
-        <div className='max-w-screen-xl mx-auto mb-10 z-10 relative'>  {/* Added 'relative' class */}
+        <div className='max-w-screen-xl lg:mx-auto mx-20 mb-10 z-10 relative'>  {/* Added 'relative' class */}
             <div className=''>
                 <div className="card">
                     <Carousel

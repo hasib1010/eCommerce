@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCart } from './Providers/CartProvider';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Cart = ({ isOpen, onClose }) => {
     const { state, dispatch } = useCart();
@@ -22,9 +22,9 @@ const Cart = ({ isOpen, onClose }) => {
         dispatch({ type: 'CLEAR_CART' });
     };
 
-    const handleCheckout = () => { 
-        localStorage.setItem('hasStartedPaymentSession', 'true'); 
-        onClose(); 
+    const handleCheckout = () => {
+        localStorage.setItem('hasStartedPaymentSession', 'true');
+        onClose();
         navigate('/checkout', { state: { items: state.items, total: calculateTotalPrice() } });
     };
 
@@ -35,12 +35,16 @@ const Cart = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="fixed top-0 right-0 w-full md:w-1/3 bg-white text-black shadow-lg z-50 h-full overflow-y-auto">
+        <div className="fixed top-0 right-0 w-full md:w-1/3 bg-white text-black shadow-lg   h-full overflow-y-auto z-40">
             <button onClick={onClose} className="absolute top-4 right-4 text-5xl font-bold">&times;</button>
             <div className='p-6'>
                 <h2 className='text-3xl font-bold mb-6'>Shopping Cart</h2>
                 {state.items.length === 0 ? (
-                    <p>Your cart is empty.</p>
+                    <div className='flex  flex-col items-center justify-center h-screen'>
+                        <p>There is nothing in your bag!</p>
+                        <img src="https://fabyoh.com/_next/image?url=%2Fassets%2FemptyCart.webp&w=128&q=75" alt="" />
+                        <Link onClick={onClose} to={'/AllProducts'} className='w-fit bg-gray-700 text-white text-center text-5xl p-5 rounded-3xl  '>Shop Now</Link>
+                    </div>
                 ) : (
                     <div>
                         <ul className='space-y-4'>
