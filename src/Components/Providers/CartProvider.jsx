@@ -20,7 +20,7 @@ const cartReducer = (state, action) => {
             const existingItemIndex = state.items.findIndex(item =>
                 item.id === id && item.size === size && item.color === color
             );
-        
+
             if (existingItemIndex > -1) {
                 // Item exists, increase the quantity
                 const updatedItems = [...state.items];
@@ -44,6 +44,7 @@ const cartReducer = (state, action) => {
             );
             return { ...state, items: updatedItems };
         }
+        
         case 'DECREASE_QUANTITY': {
             const { id, size, color } = action.payload;
             const updatedItems = state.items.map(item =>
@@ -53,14 +54,23 @@ const cartReducer = (state, action) => {
             );
             return { ...state, items: updatedItems };
         }
-        case 'REMOVE_ITEM':
-            return { ...state, items: state.items.filter(item => item.id !== action.payload.id) };
+
+        case 'REMOVE_ITEM': {
+            const { id, size, color } = action.payload;
+            return { 
+                ...state, 
+                items: state.items.filter(item => !(item.id === id && item.size === size && item.color === color)) 
+            };
+        }
+
         case 'CLEAR_CART':
             return { ...state, items: [] };
+        
         default:
             return state;
     }
 };
+
 
 
 

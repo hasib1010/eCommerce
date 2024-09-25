@@ -3,12 +3,11 @@ import Swal from 'sweetalert2';
 import { useCart } from './Providers/CartProvider';
 
 const AddToCartButton = ({ product, selectedSize, selectedColor, quantity }) => {
-    console.log(quantity);
-    
     const { dispatch } = useCart();
 
     const handleAddToCart = () => {
         if (selectedSize && selectedColor) {
+            // Dispatching the action to add the item to the cart
             dispatch({
                 type: 'ADD_ITEM',
                 payload: {
@@ -18,17 +17,23 @@ const AddToCartButton = ({ product, selectedSize, selectedColor, quantity }) => 
                     price: product.price,
                     size: selectedSize,
                     color: selectedColor,
-                    quantity: quantity,  // Include quantity here
+                    quantity: quantity, // Include quantity here
                 }
             });
-            
+
+            // Show a success notification
             Swal.fire({
                 icon: 'success',
                 title: 'Added to Cart',
                 text: 'Product has been added to your cart!',
-                confirmButtonText: 'OK'
+                showConfirmButton: false,
+                timer: 1500,
+                position: 'top-end',
+                toast: true,
+                timerProgressBar: true,
             });
         } else {
+            // Show an error notification if size or color is not selected
             Swal.fire({
                 icon: 'error',
                 title: 'Selection Error',
@@ -37,7 +42,6 @@ const AddToCartButton = ({ product, selectedSize, selectedColor, quantity }) => 
             });
         }
     };
-    
 
     return (
         <button

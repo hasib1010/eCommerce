@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { IconButton, Typography } from '@mui/material';
+import { IconButton, Typography, Skeleton } from '@mui/material';
 import Favorite from '@mui/icons-material/Favorite';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import useWishlist from '../../Hooks/UseWishlist';
@@ -23,7 +23,8 @@ const Filter = () => {
     const [showTrending, setShowTrending] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(window.innerWidth < 768 ? 10 : 12);
-    const [showFilters, setShowFilters] = useState(false); // State to manage filter visibility
+    const [showFilters, setShowFilters] = useState(false);
+    const [loading, setLoading] = useState(true); // Loading state
 
     const priceRanges = [
         { label: '$0 - $100', range: [0, 100] },
@@ -33,6 +34,7 @@ const Filter = () => {
     ];
 
     const fetchProducts = async () => {
+        setLoading(true); // Start loading
         try {
             const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings");
             if (!res.ok) throw new Error('Network response was not ok');
@@ -41,6 +43,8 @@ const Filter = () => {
             setFilteredProducts(data.products);
         } catch (error) {
             console.error("Failed to fetch products:", error);
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -132,23 +136,20 @@ const Filter = () => {
     }, []);
 
     return (
-        <div className='lg:min-w-[500px] lg:mr-10 lg:px-4'>
+        <div className='lg:mr-10 lg:px-4'>
             <div className='border-b py-5 text-2xl flex justify-between items-center'>
                 <h4 className='font-semibold'>{`Total ${filteredProducts.length} Items Found`}</h4>
                 <button onClick={clearFilters} className='text-red-500 font-bold'>Clear All</button>
             </div>
             <div className='flex lg:flex-row flex-col mt-4'>
-                <div className='flex flex-col border bg-white rounded-lg shadow-md lg:min-w-[450px] w-full p-4'>
-                    <div className='flex items-center justify-between'>
+                <div className='flex flex-col border  bg-white rounded-lg shadow-md  p-4'>
+                    <div className='flex   w-[100%] items-center justify-between'>
                         <h3 className='uppercase lg:text-2xl font-bold'>Filters</h3>
-                        {/* Toggle button for small devices */}
                         <button onClick={() => setShowFilters(prev => !prev)} className='text-lg md:hidden'>
                             {showFilters ? 'Hide Filters' : 'Show Filters'}
                         </button>
                     </div>
-                    {/* Filters container */}
                     <div className={`${showFilters ? 'block' : 'hidden'} md:block`}>
-                        {/* Category Filter */}
                         <div className='border-b py-4'>
                             <h4 className='text-2xl font-semibold cursor-pointer flex justify-between items-center' onClick={() => toggleCollapse('category')}>
                                 Category <span>{collapsed.category ? '▼' : '▲'}</span>
@@ -172,7 +173,6 @@ const Filter = () => {
                                 </div>
                             )}
                         </div>
-                        {/* Price Range Filter */}
                         <div className='border-b py-4'>
                             <h4 className='text-2xl font-semibold cursor-pointer flex justify-between items-center' onClick={() => toggleCollapse('price')}>
                                 Price Range <span>{collapsed.price ? '▼' : '▲'}</span>
@@ -196,7 +196,6 @@ const Filter = () => {
                                 </div>
                             )}
                         </div>
-                        {/* In Stock Filter */}
                         <div className='border-b py-4'>
                             <h4 className='text-2xl font-semibold'>In Stock</h4>
                             <input
@@ -207,8 +206,6 @@ const Filter = () => {
                             />
                             <label className='ml-2'>Show Only In Stock</label>
                         </div>
-
-                        {/* Trending Products Filter */}
                         <div className='border-b py-4'>
                             <h4 className='text-2xl font-semibold'>Trending Products</h4>
                             <input
@@ -222,11 +219,19 @@ const Filter = () => {
                     </div>
                 </div>
 
-                {/* Products Display */}
                 <div className='container mx-auto border-l lg:p-10 px-1 bg-gray-50 rounded-lg shadow-md'>
                     <h2 className='text-xl font-semibold mb-4'>Products</h2>
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
-                        {currentProducts.length === 0 ? (
+                        {loading ? (
+                            Array.from({ length: itemsPerPage }).map((_, index) => (
+                                <div key={index} className='border relative rounded-lg p-4 mb-4 bg-white shadow-sm'>
+                                    <Skeleton variant="rectangular" width="100%" height={250} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                                </div>
+                            ))
+                        ) : currentProducts.length === 0 ? (
                             <p>No products available.</p>
                         ) : (
                             currentProducts.map(product => (
@@ -242,10 +247,11 @@ const Filter = () => {
                                                 className={`absolute rounded-full top-0 left-0 ${product?.isTrending ? "block" : "hidden"}`}
                                             />
                                         </div>
-
-                                        <Typography><h5 className='text-xl my-2'>
-                                            {product.name}
-                                        </h5></Typography>
+                                        <Typography>
+                                            <h5 className='text-xl my-2'>
+                                                {product.name}
+                                            </h5>
+                                        </Typography>
                                         <Typography>${parseFloat(product.price).toFixed(2)}</Typography>
                                     </Link>
                                     <div className='absolute bottom-3 right-9'>
@@ -257,7 +263,6 @@ const Filter = () => {
                             ))
                         )}
                     </div>
-                    {/* Pagination Controls */}
                     <div className='flex justify-evenly my-4'>
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}

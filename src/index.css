@@ -74,12 +74,76 @@
   transition: all 0.3s ease;
 }
 
- 
-
 .trendingTitle {
   display: none; /* Hide the text by default */
 }
 
 .x:hover .trendingTitle {
   display: block; /* Show text when hovering over the parent div */
+}
+
+/* Fire effect animations */
+@keyframes fire-flame {
+  0% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 0.9;
+    transform: translateY(-5px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fire-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.8), 0 0 20px rgba(255, 100, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 165, 0, 1), 0 0 30px rgba(255, 200, 0, 0.8);
+  }
+}
+
+body {
+  overflow: hidden;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+ 
+.image-zoom {
+  cursor: zoom-in;
+  position: relative;
+  overflow: hidden; /* Hide overflow for a cleaner zoom effect */
+  width: 100%; /* Make the container responsive */
+  max-width: 500px; /* Set a maximum width */
+  aspect-ratio: 1; /* Set the aspect ratio to match the image (e.g., 1.5 for a 3:2 image) */
+}
+
+.image-zoom img {
+  position: absolute; /* Position the image absolutely */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1); /* Center the image */
+  transition: transform 0.3s ease; /* Smooth transition */
+  width: 100%; /* Set width to fill the container */
+  height: auto; /* Allow height to adjust based on width */
+  object-fit: cover; /* Cover the container without stretching */
+
+}
+
+.image-zoom:hover img {
+  transform: translate(-50%, -50%) scale(2); /* Zoom in on hover */
 }

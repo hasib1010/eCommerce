@@ -234,7 +234,7 @@ const AllProducts = () => {
                                         <Box className="border relative rounded-md p-3 group" key={item ? item._id : index} sx={{ width: '100%', marginRight: 0.5, my: 5 }}>
                                             <div className='flex flex-col lg:gap-5'>
                                                 {item ? (
-                                                    <Link to={`/product/${item._id}`}>
+                                                    <Link  to={`/product/${item._id}`}>
                                                         <div className='lg:min-h-96 relative'>
                                                             <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={item.catalogImages[0]} alt={item.name} />
                                                             <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
@@ -242,7 +242,7 @@ const AllProducts = () => {
                                                     </Link>
 
                                                 ) : (
-                                                    <Skeleton variant="rectangular" width={256} height={320} />
+                                                    <Skeleton variant="rectangular" width={"100%"} height={320} />
                                                 )}
                                                 {item ? (
                                                     <Box className="flex justify-between items-center" sx={{ pr: 2 }}>
