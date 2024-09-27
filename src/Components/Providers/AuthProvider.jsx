@@ -59,7 +59,7 @@ function AuthProvider({ children }) {
     };
 
     if (loading) {
-        return <Loader />;
+        return <Loader />;  
     }
 
     return (

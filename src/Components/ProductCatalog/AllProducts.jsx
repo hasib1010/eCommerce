@@ -41,7 +41,7 @@ const AllProducts = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings");
+            const res = await fetch("http://localhost:3000/products/clothings");
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             setAllProducts(data.products);
@@ -60,7 +60,7 @@ const AllProducts = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
+                const res = await fetch("http://localhost:3000/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories);
@@ -75,7 +75,7 @@ const AllProducts = () => {
         if (!user) return;
 
         try {
-            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
+            const response = await fetch(`http://localhost:3000/users/${user.uid}`);
             if (response.ok) {
                 const data = await response.json();
                 setWishlist(data.wishList || []);
@@ -107,7 +107,7 @@ const AllProducts = () => {
     const updateWishlist = async (id, updatedWishlist) => {
         const dataToSubmit = { wishList: updatedWishlist };
         try {
-            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${id}`, {
+            const response = await fetch(`http://localhost:3000/users/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSubmit)
@@ -236,8 +236,8 @@ const AllProducts = () => {
                                                 {item ? (
                                                     <Link  to={`/product/${item._id}`}>
                                                         <div className='lg:min-h-96 relative'>
-                                                            <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={item.catalogImages[0]} alt={item.name} />
-                                                            <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={item.catalogImages[1]} alt={item.name} />
+                                                            <img className='w-full absolute top-0 rounded-lg  group-hover:opacity-0 duration-300 ease-in-out' src={item.thumbnailImage} alt={item.name} />
+                                                            <img className='w-full   rounded-lg  group-hover:opacity-100 duration-300 ease-in-out' src={item.hoverImageUrl} alt={item.name} />
                                                         </div>
                                                     </Link>
 

@@ -9,7 +9,8 @@ const stripePromise = loadStripe("pk_test_51PypvVKj6EpE0ZfrXAJfky3r5Y5ugbjJTVgJZ
 const CheckoutPage = () => {
     const location = useLocation();
     const { items, total } = location.state || { items: [], total: 0 };
-
+    console.log(items);
+    
     const [clientSecret, setClientSecret] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,10 +18,10 @@ const CheckoutPage = () => {
     useEffect(() => {
         const fetchClientSecret = async () => {
             try {
-                const response = await fetch('https://e-commerce-server-alpha.vercel.app/create-payment-intent', {
+                const response = await fetch('http://localhost:3000/create-payment-intent', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items, total })
+                    body: JSON.stringify({  total })
                 });
 
                 if (!response.ok) {

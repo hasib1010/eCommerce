@@ -3,9 +3,7 @@ function Loader() {
     return (
         <div className="flex items-center justify-center h-screen">
             <div className="relative">
-                <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
-                <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin">
-                </div>
+                <img className='animate-pulse' src="https://fabyoh.com/_next/image?url=https%3A%2F%2Fapi.fabyoh.com%2Flogos%2Fconverted-c274775b-8cda-4b47-af41-342385184758.webp&w=1920&q=75" alt="" />
             </div>
         </div>
     )

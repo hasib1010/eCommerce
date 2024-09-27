@@ -32,7 +32,7 @@ const Registration = () => {
             };
 
             // Post user data to backend
-            const response = await fetch('https://e-commerce-server-alpha.vercel.app/users', {  
+            const response = await fetch('http://localhost:3000/users', {  
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -116,12 +116,7 @@
   }
 }
 
-body {
-  overflow: hidden;
-}
-.overflow-hidden {
-  overflow: hidden;
-}
+ 
  
 .image-zoom {
   cursor: zoom-in;

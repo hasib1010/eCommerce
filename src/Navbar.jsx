@@ -29,7 +29,7 @@ const NavBar = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
+                const res = await fetch("http://localhost:3000/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories.slice(0, 3));
@@ -79,7 +79,7 @@ const NavBar = () => {
     return (
         <div className='shadow-lg lg:sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
             {/* Footer Navbar for Small Devices */}
-            <div className='fixed bottom-0 left-0 right-0 mt-28 bg-white shadow-lg lg:hidden z-50'>
+            <div className='fixed bottom-0 left-0 right-0 mt-28 bg-white shadow-lg h-fit lg:hidden z-50'>
                 <div className='flex items-center pt-3 justify-around p-2'>
                     <Link to="/" className='text-center text-black'>
                         <GoHomeFill className='text-3xl' />
@@ -227,7 +227,7 @@ const NavBar = () => {
 
             {/* Cart Component */}
             {isCartOpen && (
-                <div ref={cartRef} className='absolute right-0 top-20 bg-white shadow-lg rounded-lg z-50'>
+                <div ref={cartRef} className='   bg-white shadow-lg rounded-lg z-50'>
                     <Cart isOpen={isCartOpen} onClose={closeCart} />
                 </div>
             )}

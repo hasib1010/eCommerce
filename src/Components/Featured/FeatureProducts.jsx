@@ -14,8 +14,10 @@ const FeatureProducts = () => {
     const { wishlist, toggleWishlist } = useWishlist();
 
     const fetchData = async () => {
-        const url = 'https://e-commerce-server-alpha.vercel.app/products/clothings';
+
+        const url = 'http://localhost:3000/products/clothings';
         try {
+            setLoading(true)
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             const result = await response.json();
@@ -32,16 +34,6 @@ const FeatureProducts = () => {
         fetchData();
     }, []);
 
-    if (loading) {
-        return (
-            <div className='grid lg:grid-cols-4 grid-cols-2 gap-10'>
-                {Array.from({ length: 9 }, (_, index) => (
-                    <Skeleton key={index} variant="rectangular" width={"100%"} height={310} />
-                ))}
-            </div>
-        );
-    }
-
     if (error) {
         return <div>Error: {error}</div>;
     }
@@ -51,14 +43,21 @@ const FeatureProducts = () => {
             {products.map((product) => (
                 <Box key={product._id} className="relative flex flex-col justify-between p-4 group border-gray-200 rounded-md overflow-hidden border">
                     <Link to={`/product/${product._id}`}>
-                        <div className='lg:min-h-96 relative'>
-                            <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={product.catalogImages[0]} alt={product.name} />
-                            <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={product.catalogImages[1]} alt={product.name} />
-                        </div>
+                        {
+                            loading ? <Skeleton variant="rectangular" width={"100%"} height={382} />
+                                :
+                                <div className='lg:min-h-96 relative'>
+                                    <img className='w-full absolute top-0 rounded-lg lg:h-96 group-hover:opacity-0 duration-300 ease-in-out' src={product.catalogImages[0]} alt={product.name} />
+                                    <img className='w-full rounded-lg lg:h-96 group-hover:opacity-100 duration-300 ease-in-out' src={product.catalogImages[1]} alt={product.name} />
+                                </div>
+                        }
 
                     </Link>
-                    <div className="flex items-center justify-between mt-5">
-                        <Link to={`/product/${product._id}`}> <h5>{product.name} </h5></Link>
+                    <div className="flex items-center justify-between mt-4 ">
+                       {
+                        loading ? <Skeleton variant="rectangular" width={"100%"} height={25} />
+                        : <Link to={`/product/${product._id}`}> <h5>{product.name} </h5></Link>
+                       }
                         <IconButton onClick={() => toggleWishlist(product._id)}>
                             {wishlist.includes(product._id) ? <Favorite sx={{ color: pink[500] }} /> : <FavoriteBorder />}
                         </IconButton></div>

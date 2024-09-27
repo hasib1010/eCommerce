@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Carousel } from 'primereact/carousel';
 import { Link } from 'react-router-dom';
+import { Skeleton } from '@mui/material';
 
 
 const TodaysDeals = () => {
@@ -33,7 +34,7 @@ const TodaysDeals = () => {
 
 
     const fetchData = async () => {
-        const url = 'https://e-commerce-server-alpha.vercel.app/products/clothings';
+        const url = 'http://localhost:3000/products/clothings';
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -52,21 +53,17 @@ const TodaysDeals = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    if (loading) return (
-        <div>
-            <img className='w-1/3 mx-auto rounded-full' src="https://cdn.dribbble.com/users/1019864/screenshots/10758864/fashion3.gif" alt="Loading" />
-            <p className='text-center mt-3 font-semibold'>Loading...</p>
-        </div>
-    );
+ 
     if (error) return <p>Error: {error}</p>;
 
     const productTemplate = (product) => {
         return (
             <div className=" surface-border border-round  text-center   px-3  ">
                 <div className=" relative w-fit mx-auto  pb-10">
-                    <Link to={`product/${product._id}`}><img src={product.hoverImageUrl} alt={product.name} className=" h-72 w-fit mx-auto  shadow-2  transition-transform transform hover:scale-105 hover:shadow-md hover:bg-gray-100" /></Link>
+                    {
+                        loading?  <Skeleton variant="rectangular" width={"100%"} height={382} />:<Link to={`product/${product._id}`}><img src={product.hoverImageUrl} alt={product.name} className=" h-72 w-fit mx-auto  shadow-2  transition-transform transform hover:scale-105 hover:shadow-md hover:bg-gray-100" /></Link>
 
+                    }
                 </div>
             </div>
         );
