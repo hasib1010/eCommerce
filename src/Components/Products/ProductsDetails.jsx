@@ -15,7 +15,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`https://e-commerce-server-alpha.vercel.app/products/clothings/${id}`);
+        const res = await fetch(`http://localhost:3000/products/clothings/${id}`);
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         setProduct(data);
@@ -30,19 +30,42 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
+  // Skeleton for loading state
   if (loading) {
-    return <Skeleton variant="rectangular" width="100%" height={500} />;
+    return (
+      <div className='container mx-auto mt-10 px-2'>
+        <div className='my-5 flex flex-col lg:flex-row gap-10'>
+          <div className='border w-full rounded-xl pb-10 flex-1 flex flex-col pt-10 items-center justify-start gap-20'>
+            <Skeleton variant="rectangular" width="100%" height={500} />
+            <div className="flex flex-wrap gap-3">
+              <Skeleton variant="rectangular" width={100} height={50} />
+              <Skeleton variant="rectangular" width={100} height={50} />
+              <Skeleton variant="rectangular" width={100} height={50} />
+            </div>
+          </div>
+          <div className='flex-1 flex flex-col gap-10'>
+            <Skeleton variant="text" width="60%" height={40} />
+            <Skeleton variant="text" width="30%" height={30} />
+            <Skeleton variant="text" width="100%" height={100} />
+            <Skeleton variant="text" width="40%" height={30} />
+            <Skeleton variant="text" width="40%" height={30} />
+            <Skeleton variant="text" width="40%" height={30} />
+            <Skeleton variant="text" width="40%" height={30} />
+            <Skeleton variant="text" width="20%" height={30} />
+            <Skeleton variant="text" width="20%" height={30} />
+            <Skeleton variant="text" width="30%" height={30} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Get the selected variant based on size and color
   const selectedVariant = product.variants.find(variant => 
-    variant.size === selectedSize && variant.color === selectedColor
+    variant?.size === selectedSize && variant?.color === selectedColor
   );
 
-  // Calculate total stock based on selected variant
   const totalStock = selectedVariant ? selectedVariant.stock : 0;
 
-  // Get available colors for the selected size
   const availableColors = selectedSize 
     ? Array.from(new Set(product.variants
         .filter(variant => variant.size === selectedSize)
@@ -102,8 +125,8 @@ const ProductDetails = () => {
                     key={size}
                     onClick={() => {
                       setSelectedSize(size);
-                      setSelectedColor(''); // Reset color on size change
-                      setQuantity(1); // Reset quantity on size change
+                      setSelectedColor('');  
+                      setQuantity(1);  
                     }}
                     className={`cursor-pointer px-3 py-1 rounded ${size === selectedSize ? 'bg-red-700 text-white' : 'bg-gray-200'}`}
                   >
@@ -120,7 +143,7 @@ const ProductDetails = () => {
                     key={color}
                     onClick={() => {
                       setSelectedColor(color);
-                      setQuantity(1); // Reset quantity on color change
+                      setQuantity(1); 
                     }}
                     className={`cursor-pointer px-6 py-3 font-bold rounded-3xl border-2 ${color === selectedColor ? 'bg-red-700 text-white' : 'bg-gray-200 text-gray-600 border-gray-400 hover:bg-gray-300'}`}
                   >

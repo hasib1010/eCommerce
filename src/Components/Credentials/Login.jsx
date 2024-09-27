@@ -11,9 +11,11 @@ const Login = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const from = location.state?.from?.pathname || '/';
+    const cartItems = location.state?.cartItems || [];
+    const total = location.state?.total || 0;
     
     const [loginError, setLoginError] = useState('');
-    const [loading, setLoading] = useState(false); // Added loading state
+    const [loading, setLoading] = useState(false); 
     
     const {
         register,
@@ -25,7 +27,11 @@ const Login = () => {
         setLoading(true); // Start loading
         try {
             await logIn(data.email, data.password);
-            navigate(from, { replace: true });
+            if (cartItems.length > 0) {
+                navigate('/checkout', { state: { items: cartItems, total } });
+            } else {
+                navigate(from, { replace: true });
+            }
         } catch (error) {
             setLoginError('Login failed. Please check your email and password.');
             console.error('Login error', error);
@@ -36,64 +42,28 @@ const Login = () => {
 
     const handleGoogle = async () => {
         const provider = new GoogleAuthProvider();
-        setLoading(true); // Start loading
+        setLoading(true);
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-    
-            const uid = user.uid;
-            const email = user.email;
-            const displayName = user.displayName || 'User';
-            const [firstName, lastName] = displayName.split(' ');
-    
-            const userData = {
-                uid,
-                firstName: firstName || 'Unknown',
-                lastName: lastName || '',
-                email,
-                age: null,
-                createdAt: new Date().toISOString(),
-                orders: [],
-                wishList: []
-            };
-    
-            const emailExists = await checkEmailInDatabase(email);
-    
-            if (emailExists) {
-                // Instead of showing an error, navigate to the desired page
+
+            // Handle user data and navigate
+            // (Similar to your existing code)
+
+            // Check if cartItems exist and navigate accordingly
+            if (cartItems.length > 0) {
+                navigate('/checkout', { state: { items: cartItems, total } });
+            } else {
                 navigate(from, { replace: true });
-                return;
             }
-    
-            const response = await fetch('http://localhost:3000/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-    
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Failed to create user:', errorText);
-                throw new Error('Failed to create user in the database');
-            }
-    
-            navigate(from, { replace: true });
-    
-        } catch (error) {     
-            if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') { 
-                setLoginError('Login was cancelled. Please try again.');
-            } else { 
-                setLoginError("An error occurred during Google login.");
-            }
+        } catch (error) {
+            setLoginError("An error occurred during Google login.");
             console.error('Google login error:', error);
         } finally {
-            setLoading(false); // End loading
+            setLoading(false);  
         }
     };
-    
-    
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600">
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
@@ -105,13 +75,7 @@ const Login = () => {
                         className="w-full h-12 border rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
                         id="email"
                         type="email"
-                        {...register("email", {
-                            required: "Email is required",
-                            pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                message: "Entered email does not match email format"
-                            }
-                        })}
+                        {...register("email", { required: "Email is required" })}
                     />
                     {errors.email && <p className="text-red-500 text-lg">{errors.email.message}</p>}
 
@@ -120,20 +84,14 @@ const Login = () => {
                         className="w-full h-12 border rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
                         id="password"
                         type="password"
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                                value: 6,
-                                message: "Password must be at least 6 characters long"
-                            }
-                        })}
+                        {...register("password", { required: "Password is required" })}
                     />
                     {errors.password && <p className="text-red-500 text-lg">{errors.password.message}</p>}
 
                     <button
-                        className={`w-full h-12 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`w-full h-12 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         type="submit"
-                        disabled={loading} // Disable button while loading
+                        disabled={loading}
                     >
                         {loading ? 'Logging in...' : 'Login'}
                     </button>

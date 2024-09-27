@@ -14,7 +14,7 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
 
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,7 +43,6 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
       });
 
       if (stripeError) {
-        console.error('Stripe Error:', stripeError);  
         setError(`Payment failed: ${stripeError.message}`);
         return;
       }
@@ -53,21 +52,15 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
         return;
       }
 
-      const transactionId = paymentIntent.id;
- 
-      const confirmedAt = new Date().toISOString();  
-
       const orderData = {
         uid: user.uid,
         items, 
-        transactionId: transactionId,
-        shippingAddress: shippingAddress,
+        transactionId: paymentIntent.id,
+        shippingAddress,
         phoneNumber: contactNumber,
-        total: total,
-        confirmedAt: confirmedAt  
+        total,
+        confirmedAt: new Date().toISOString(),  
       };
-
-      console.log('Order Data:', orderData); 
       
       const response = await fetch('http://localhost:3000/orders', {
         method: 'POST',
@@ -92,22 +85,21 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
       });
 
     } catch (error) {
-      console.error('Error:', error);  
       setError(`An error occurred: ${error.message}`);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Review Your Order</h2>
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Review Your Order</h2>
 
       {items.length === 0 ? (
-        <p className="text-gray-600">Your cart is empty.</p>
+        <p className="text-gray-600 text-center">Your cart is empty.</p>
       ) : (
         <div>
           <ul className="space-y-4 mb-6">
             {items.map((item) => (
-              <li key={`${item.id}-${item.size}-${item.color}`} className="border border-gray-200 p-4 rounded-lg flex items-center gap-4 bg-gray-50 shadow-sm">
+              <li key={`${item.id}-${item.size}-${item.color}`} className="border border-gray-200 p-4 rounded-lg flex items-center gap-4 bg-gray-50 shadow-sm hover:shadow-lg transition-shadow duration-300">
                 <img src={item.thumbnailImage} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
@@ -119,8 +111,8 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
               </li>
             ))}
           </ul>
-          <div className="text-xl font-bold mb-6 text-gray-800">
-            Total: ${total.toFixed(2)}
+          <div className="text-xl font-bold mb-6 text-gray-800 text-right">
+            Total: <span className="text-blue-600">${total.toFixed(2)}</span>
           </div>
         </div>
       )}
@@ -149,14 +141,15 @@ const CheckoutForm = ({ items, total, clientSecret }) => {
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
       <div className="mb-6">
-        <CardElement className="border border-gray-300 p-3 rounded-md shadow-sm" />
+        <label className="block text-gray-700 font-semibold mb-2">Payment Information</label>
+        <CardElement className="border border-gray-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
       <button
         type="submit"
         disabled={!stripe}
-        className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
       >
-        Pay
+        Pay Now
       </button>
     </form>
   );

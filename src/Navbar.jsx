@@ -77,9 +77,9 @@ const NavBar = () => {
     };
 
     return (
-        <div className='shadow-lg lg:sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
+        <div className='shadow-lg lg:sticky top-0 z-40 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
             {/* Footer Navbar for Small Devices */}
-            <div className='fixed bottom-0 left-0 right-0 mt-28 bg-white shadow-lg h-fit lg:hidden z-50'>
+            <div className='fixed bottom-0 left-0 right-0 mt-28 bg-white shadow-lg h-fit lg:hidden z-40'>
                 <div className='flex items-center pt-3 justify-around p-2'>
                     <Link to="/" className='text-center text-black'>
                         <GoHomeFill className='text-3xl' />
@@ -172,7 +172,7 @@ const NavBar = () => {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div ref={menuRef} className='fixed inset-0 bg-white text-black z-50 flex flex-col p-4'>
+                <div ref={menuRef} className='fixed inset-0 bg-white text-black z-40 flex flex-col p-4'>
                     <div className='flex justify-between items-center'>
                         <h2 className='text-2xl font-bold'>Menu</h2>
                         <button onClick={closeMenu}>
@@ -227,10 +227,11 @@ const NavBar = () => {
 
             {/* Cart Component */}
             {isCartOpen && (
-                <div ref={cartRef} className='   bg-white shadow-lg rounded-lg z-50'>
-                    <Cart isOpen={isCartOpen} onClose={closeCart} />
-                </div>
-            )}
+    <div ref={cartRef} className='fixed top-0 right-0 bg-white shadow-lg rounded-lg z-40 h-full w-1/4 overflow-y-auto'>
+        <Cart onClose={closeCart} />
+    </div>
+)}
+
         </div>
     );
 };

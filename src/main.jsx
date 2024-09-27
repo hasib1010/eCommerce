@@ -9,15 +9,16 @@ import ProductDetails from './Components/Products/ProductsDetails.jsx';
 import { CartProvider } from './Components/Providers/CartProvider.jsx';
 import CheckoutPage from './CheckoutPage.jsx';
 import Cancel from './Components/Payments/Cancel.jsx';
-import Success from './Components/Payments/Success.jsx'; 
+import Success from './Components/Payments/Success.jsx';
 import AuthProvider from './Components/Providers/AuthProvider.jsx';
 import LogIn from './Components/Credentials/Login.jsx';
 import Registration from './Components/Credentials/Registration.jsx';
-import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx'; 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  
+import PrivateRoutes from './Components/PrivateRoute/PrivateRoute.jsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ProductCatalog from './Components/ProductCatalog/ProductCatalog.jsx';
 import UserDashboard from "./Components/Credentials/UserDashboard.jsx"
 import AllProducts from './Components/ProductCatalog/AllProducts.jsx';
+import OrderDetails from './Components/Hooks/OrderDetails.jsx';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/navbar/:cat",
-        element: <ProductCatalog/>,
+        element: <ProductCatalog />,
       },
       {
         path: "/login",
@@ -49,36 +50,48 @@ const router = createBrowserRouter([
         element: <ProductDetails />,
       },
       {
-        path: "/checkout",
-        element: <PrivateRoutes><CheckoutPage></CheckoutPage></PrivateRoutes>
+        path:"/orders/:transactionId",
+        element:< OrderDetails />
       },
-      {
-        path: "/userDashboard",
-        element: <PrivateRoutes>
-          <UserDashboard></UserDashboard>
-        </PrivateRoutes>
-      },
-      {
-        path: "/cancel",
-        element: <PrivateRoutes> <Cancel /> </PrivateRoutes>
+  {
+    path: "/checkout",
+    element:
+      <PrivateRoutes>
+        <CheckoutPage></CheckoutPage>
+      </PrivateRoutes>
+  },
+  {
+    path: "/userDashboard",
+    element:
+      <PrivateRoutes>
+        <UserDashboard>
+        </UserDashboard>
+      </PrivateRoutes>
+  },
+  {
+    path: "/cancel",
+    element:
+      <PrivateRoutes>
+        <Cancel />
+      </PrivateRoutes>
 
-      },
-      {
-        path: "/success",
-        element: <PrivateRoutes>  <Success /> </PrivateRoutes>
-      },
-    ],
+  },
+  {
+    path: "/success",
+    element: <PrivateRoutes>  <Success /> </PrivateRoutes>
+  },
+],
   },
 ]);
 
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
- <AuthProvider>
-    <CartProvider>
-      <StrictMode>
-        <RouterProvider router={router} />
-      </StrictMode>
-    </CartProvider>
-  </AuthProvider>
+    <AuthProvider>
+      <CartProvider>
+        <StrictMode>
+          <RouterProvider router={router} />
+        </StrictMode>
+      </CartProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );

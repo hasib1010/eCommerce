@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useCart } from './Providers/CartProvider';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Cart = ({ isOpen, onClose }) => {
+const Cart = ({ onClose }) => {
     const { state, dispatch } = useCart();
     const navigate = useNavigate();
 
@@ -33,18 +33,17 @@ const Cart = ({ isOpen, onClose }) => {
         navigate('/checkout', { state: { items: state.items, total: calculateTotalPrice() } });
     };
 
-    if (!isOpen) return null;
-
     const calculateTotalPrice = () => {
         return state.items.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
     return (
-        <div className="fixed top-0 right-0 lg:w-1/4 md:w-1/3 bg-white text-black shadow-2xl h-full z-40 transition-transform transform-gpu" style={{ translate: isOpen ? '0' : '100%' }}>
+        <div className="fixed bg-white top-0 right-0 lg:w-1/4 md:w-1/3 text-black shadow-2xl h-full z-40 transition-transform transform-gpu">
             <button onClick={onClose} className="absolute top-4 right-4 text-3xl font-bold text-gray-500 hover:text-red-500 transition">×</button>
+            
             <div className='p-6 flex flex-col h-full'>
                 <h2 className='text-3xl font-bold mb-6 text-center'>🛒 Shopping Cart</h2>
-                <div className="flex-1 overflow-y-auto" style={{ maxHeight: '75%' }}> {/* Allow scrolling */}
+                <div className="flex-1 overflow-y-auto  cartScroll" style={{ maxHeight: '75%' }}> {/* Allow scrolling */}
                     {state.items.length === 0 ? (
                         <div className='flex flex-col items-center justify-center h-full'>
                             <p className='text-lg text-gray-600 mb-4'>Your cart is empty!</p>
@@ -90,8 +89,6 @@ const Cart = ({ isOpen, onClose }) => {
             </div>
         </div>
     );
-    
-    
 };
 
 export default Cart;

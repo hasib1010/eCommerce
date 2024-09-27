@@ -15,7 +15,7 @@ import TrendingProducts from './Components/TrendingProducts/TrendingProducts';
 function App() {
 
   return (
-    <div className='z-10'>
+    <div className=''>
       <Slider></Slider>
       <div className='w-full  bg-[#8567e6]'>
         <Marquee className='py-1 lg:mt-2'>

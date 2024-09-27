@@ -82,39 +82,7 @@
   display: block; /* Show text when hovering over the parent div */
 }
 
-/* Fire effect animations */
-@keyframes fire-flame {
-  0% {
-    opacity: 0.6;
-    transform: translateY(0);
-  }
-  25% {
-    opacity: 0.9;
-    transform: translateY(-5px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-10px);
-  }
-  75% {
-    opacity: 0.9;
-    transform: translateY(-5px);
-  }
-  100% {
-    opacity: 0.6;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fire-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 10px rgba(255, 165, 0, 0.8), 0 0 20px rgba(255, 100, 0, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(255, 165, 0, 1), 0 0 30px rgba(255, 200, 0, 0.8);
-  }
-}
+ 
 
  
  
@@ -142,3 +110,12 @@
 .image-zoom:hover img {
   transform: translate(-50%, -50%) scale(2); /* Zoom in on hover */
 }
+
+/* .cartScroll{
+  position: relative;
+  z-index: 1;
+}
+.lenisX{
+  position: relative;
+  z-index: 1;
+} */ 
