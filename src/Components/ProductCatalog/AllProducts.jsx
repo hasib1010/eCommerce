@@ -257,6 +257,7 @@ const AllProducts = () => {
                                                                 <h5 className='text-xl font-bold'>${item.price}</h5>
                                                             </Typography>
                                                         </div>
+                                                        <p className='absolute top-0 right-3     text-md px-2 rounded-full shadow-lg bg-white text-red-600 '>Flat {item.discountAmount?item.discountAmount: "" }% Discount</p>
                                                         {/* Wishlist Icon */}
                                                         <IconButton onClick={() => toggleWishlist(item._id)} color="default">
                                                             {wishlist.includes(item._id) ? (

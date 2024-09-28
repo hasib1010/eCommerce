@@ -17,14 +17,15 @@ const NavBar = () => {
     const [openCategories, setOpenCategories] = useState([]);
     const { user, logOut } = useContext(AuthContext);
     const [searchBar, setSearchBar] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { state } = useCart();
-
+    
     const cartRef = useRef(null);
-    const dropdownRef = useRef(null); // Ref for dropdown
-    const menuRef = useRef(null); // Ref for mobile menu
+    const dropdownRef = useRef(null);
+    const menuRef = useRef(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -76,6 +77,37 @@ const NavBar = () => {
         setIsDropdownOpen(prev => !prev);
     };
 
+    const handleDropdownOptionClick = () => {
+        setIsDropdownOpen(false);
+    };
+
+    // Simulated product data for demonstration
+    const products = [
+        { id: 1, name: "T-Shirt" },
+        { id: 2, name: "Jeans" },
+        { id: 3, name: "Jacket" },
+        { id: 4, name: "Sneakers" },
+        // Add more products as needed
+    ];
+
+    // Handle search input changes
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    // Filter products based on the search term
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        // Navigate to search results page or display filtered products
+        console.log('Search results:', filteredProducts);
+        // Reset search term after submit if needed
+        setSearchTerm('');
+    };
+
     return (
         <div className='shadow-lg lg:sticky top-0 z-40 bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
             {/* Footer Navbar for Small Devices */}
@@ -119,7 +151,7 @@ const NavBar = () => {
                             {item}
                         </NavLink>
                     ))}
-                    <NavbarMenu openCategories={openCategories}></NavbarMenu>
+                    <NavbarMenu openCategories={openCategories} />
                 </div>
 
                 {/* Logo */}
@@ -151,8 +183,8 @@ const NavBar = () => {
                             </div>
                             {isDropdownOpen && (
                                 <div className='absolute -right-16 top-8 mt-2 bg-white text-black rounded shadow-lg z-50 p-2'>
-                                    <Link to="/userDashboard" className='block py-1 hover:bg-gray-200'>Profile</Link>
-                                    <button onClick={logOut} className='block w-full text-left py-1 text-red-600 hover:bg-gray-200'>Sign Out</button>
+                                    <Link to="/userDashboard" className='block py-1 hover:bg-gray-200' onClick={handleDropdownOptionClick}>Profile</Link>
+                                    <button onClick={() => { logOut(); handleDropdownOptionClick(); }} className='block w-full text-left py-1 text-red-600 hover:bg-gray-200'>Sign Out</button>
                                 </div>
                             )}
                         </div>
@@ -192,14 +224,14 @@ const NavBar = () => {
                     <div className='mt-4'>
                         <IoLanguageSharp className='text-2xl cursor-pointer hover:text-yellow-300 transition-colors' />
                         {user ? (
-                            <div onClick={closeMenu} className='flex items-center gap-2 mt-2'>
-                                <Link>
+                            <div className='flex items-center gap-2 mt-2'>
+                                <Link to={'/userDashboard'} onClick={closeMenu}>
                                     <img className='h-8 w-8 rounded-full border-2 border-black' src={user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"} alt="User Avatar" />
                                 </Link>
                                 <div className='flex flex-col items-center text-sm'>
                                     <p className='text-black'>{user.displayName}</p>
                                     <Link to="/userDashboard" className='bg-blue-500 text-black py-1 px-2 rounded-md hover:bg-blue-600 transition-colors text-xs'>Dashboard</Link>
-                                    <button onClick={logOut} className='mt-1 bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition-colors text-xs'>Sign Out</button>
+                                    <button onClick={() => { logOut(); closeMenu(); }} className='mt-1 bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition-colors text-xs'>Sign Out</button>
                                 </div>
                             </div>
                         ) : (
@@ -212,26 +244,42 @@ const NavBar = () => {
             {/* Search Bar */}
             {searchBar && (
                 <div className='flex items-center justify-center w-full bg-white p-2'>
-                    <div className='flex items-center w-full max-w-md'>
+                    <form onSubmit={handleSearchSubmit} className='flex items-center w-full max-w-md'>
                         <input
                             placeholder='What are you looking for...'
                             className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
                             type="text"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                         />
+                        <button type='submit' className='ml-2'>
+                            <IoMdSearch className='text-3xl text-gray-600 hover:text-gray-800 transition-colors' />
+                        </button>
                         <button onClick={() => setSearchBar(false)} className='ml-2'>
                             <IoMdClose className='text-3xl text-gray-600 hover:text-gray-800 transition-colors' />
                         </button>
+                    </form>
+                    {/* Display filtered products */}
+                    <div>
+                        {filteredProducts.length > 0 && (
+                            <div className="absolute bg-white text-black shadow-lg mt-2 rounded-lg z-50">
+                                {filteredProducts.map(product => (
+                                    <div key={product.id} className="p-2 border-b last:border-b-0 hover:bg-gray-200 cursor-pointer">
+                                        <Link to={`/product/${product.id}`}>{product.name}</Link>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
 
             {/* Cart Component */}
             {isCartOpen && (
-    <div ref={cartRef} className='fixed top-0 right-0 bg-white shadow-lg rounded-lg z-40 h-full w-1/4 overflow-y-auto'>
-        <Cart onClose={closeCart} />
-    </div>
-)}
-
+                <div ref={cartRef} className='fixed top-0 right-0 bg-white shadow-lg rounded-lg z-40 h-full w-1/4 overflow-y-auto'>
+                    <Cart onClose={closeCart} />
+                </div>
+            )}
         </div>
     );
 };

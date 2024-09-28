@@ -65,6 +65,7 @@ const FeatureProducts = () => {
                         <p className={`absolute rounded-full top-0 left-12 bg-white text-red-600 trendingTitle ${product?.isTrending ? "block" : "hidden"}`}>
                             Trending Item
                         </p>
+                        <p className='absolute top-0 right-3     text-md px-2 rounded-full shadow-lg bg-white text-red-600 '>Flat {product.discountAmount?product.discountAmount: "" }% Discount</p>
                         <img
                             src={trendingIcon}
                             className={`absolute cursor-text rounded-full top-0 left-0 ${product?.isTrending ? "block" : "hidden"}`}

@@ -28,8 +28,7 @@ const UserOrders = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">Your Orders</h1>
-            <h2 className="text-xl text-center mb-4 text-gray-600">Welcome, {user?.displayName || "User"}!</h2>
+            <h2 className="text-xl text-center mb-4 text-white">Welcome, {user?.displayName || "User"}!</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {orders.slice().reverse().map((order, index) => {
                     const statusClass = statusStyles[order.status] || 'bg-gray-400 text-gray-800';
@@ -51,7 +50,7 @@ const UserOrders = () => {
 
                     return (
                         <Link to={`/orders/${order.transactionId}`} key={index} className="block border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-200">
-                            <div className="p-4 bg-white">
+                            <div className="p-4 bg-slate-400">
                                 <h3 className="text-lg font-semibold text-gray-800">Order ID: {order.transactionId}</h3>
                                 <p className="text-sm text-gray-600">Confirmed At: {order?.confirmedAt ? formatDate(order.confirmedAt) : "No date"}</p>
                                 <div className="flex items-center space-x-2 mt-2">
