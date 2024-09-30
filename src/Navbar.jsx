@@ -81,29 +81,31 @@ const NavBar = () => {
         setIsDropdownOpen(false);
     };
  
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([]);
 
-    useEffect(()=>{
-fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
-.then(res=> res.json())
-.then(data=> setProducts(data.products))
-    },[])
+    useEffect(() => {
+        fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
+            .then(res => res.json())
+            .then(data => setProducts(data.products));
+    }, []);
 
-    // Handle search input changes
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    // Filter products based on the search term
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        // Navigate to search results page or display filtered products
-        console.log('Search results:', filteredProducts); 
         setSearchTerm('');
+    };
+
+    const handleProductClick = (productId) => {
+        setSearchBar(false); // Close search bar when a product is clicked
+        // Navigate to the product detail page if needed
+        // Example: history.push(`/product/${productId}`);
     };
 
     return (
@@ -173,7 +175,6 @@ fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
                 {/* User Options */}
                 <div className='flex-1 items-center justify-end gap-4 hidden lg:flex'>
                     <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                    {/* <IoLanguageSharp className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' /> */}
                     {user ? (
                         <div className='relative flex items-center gap-2 dropdown' ref={dropdownRef}>
                             <div onClick={handleAvatarClick}>
@@ -258,17 +259,19 @@ fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
                         </button>
                     </form>
                     {/* Display filtered products */}
-                    <div>
-                        {filteredProducts.length > 0 && (
-                            <div className="absolute bg-white text-black shadow-lg mt-2 rounded-lg z-50">
-                                {filteredProducts.map(product => (
-                                    <div key={product.id} className="p-2 border-b last:border-b-0 hover:bg-gray-200 cursor-pointer">
-                                        <Link to={`/product/${product.id}`}>{product.name}</Link>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    {filteredProducts.length > 0 && (
+                        <div className="absolute bg-white text-black shadow-lg mt-2 lg:top-36 top-48 rounded-lg z-50 w-full max-w-md">
+                            {filteredProducts.map(product => (
+                                <div 
+                                    key={product.id} 
+                                    className="p-2 border-b last:border-b-0 hover:bg-gray-200 cursor-pointer"
+                                    onClick={() => handleProductClick(product._id)}
+                                >
+                                    <Link to={`/product/${product._id}`}>{product.name}</Link>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 
