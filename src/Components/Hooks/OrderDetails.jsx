@@ -10,7 +10,7 @@ const statusStyles = {
 };
 
 const fetchOrderDetails = async (transactionId) => {
-    const response = await fetch(`http://localhost:3000/orders/${transactionId}`);
+    const response = await fetch(`https://e-commerce-server-alpha.vercel.app/orders/${transactionId}`);
     if (!response.ok) throw new Error('Network response was not ok');
     return response.json();
 };

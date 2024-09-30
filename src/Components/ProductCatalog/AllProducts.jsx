@@ -41,7 +41,7 @@ const AllProducts = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:3000/products/clothings");
+            const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings");
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             setAllProducts(data.products);
@@ -60,7 +60,7 @@ const AllProducts = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("http://localhost:3000/products/clothings/categories");
+                const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories);
@@ -75,7 +75,7 @@ const AllProducts = () => {
         if (!user) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/users/${user.uid}`);
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
             if (response.ok) {
                 const data = await response.json();
                 setWishlist(data.wishList || []);
@@ -107,7 +107,7 @@ const AllProducts = () => {
     const updateWishlist = async (id, updatedWishlist) => {
         const dataToSubmit = { wishList: updatedWishlist };
         try {
-            const response = await fetch(`http://localhost:3000/users/${id}`, {
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSubmit)
@@ -234,7 +234,7 @@ const AllProducts = () => {
                                         <Box className="border relative rounded-md p-3 group" key={item ? item._id : index} sx={{ width: '100%', marginRight: 0.5, my: 5 }}>
                                             <div className='flex flex-col lg:gap-5'>
                                                 {item ? (
-                                                    <Link  to={`/product/${item._id}`}>
+                                                    <Link to={`/product/${item._id}`}>
                                                         <div className='lg:min-h-96 relative'>
                                                             <img className='w-full absolute top-0 rounded-lg  group-hover:opacity-0 duration-300 ease-in-out' src={item.thumbnailImage} alt={item.name} />
                                                             <img className='w-full   rounded-lg  group-hover:opacity-100 duration-300 ease-in-out' src={item.hoverImageUrl} alt={item.name} />
@@ -257,7 +257,9 @@ const AllProducts = () => {
                                                                 <h5 className='text-xl font-bold'>${item.price}</h5>
                                                             </Typography>
                                                         </div>
-                                                        <p className='absolute top-0 right-3     text-md px-2 rounded-full shadow-lg bg-white text-red-600 '>Flat {item.discountAmount?item.discountAmount: "" }% Discount</p>
+                                                        {
+                                                            item.discountAmount ? <p className='absolute top-0 right-3     text-md px-2 rounded-full shadow-lg bg-white text-red-600 '>Flat {item.discountAmount ? item.discountAmount : ""}% Discount</p> : <></>
+                                                        }
                                                         {/* Wishlist Icon */}
                                                         <IconButton onClick={() => toggleWishlist(item._id)} color="default">
                                                             {wishlist.includes(item._id) ? (

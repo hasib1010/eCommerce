@@ -1,5 +1,5 @@
 export const checkEmailInDatabase = async (email) => {
-    const response = await fetch(`http://localhost:3000/users/check-email?email=${email}`);
+    const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/check-email?email=${email}`);
     if (!response.ok) {
         throw new Error('Error checking email');
     }

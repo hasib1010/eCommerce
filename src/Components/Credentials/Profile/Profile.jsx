@@ -22,7 +22,7 @@ const Profile = () => {
         const fetchUserData = async () => {
             if (user) {
                 try {
-                    const response = await fetch(`http://localhost:3000/users/${user.uid}`);
+                    const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
                     if (!response.ok) throw new Error('Failed to fetch user data');
                     const matchedUser = await response.json();
                     setUserData(matchedUser);
@@ -79,7 +79,7 @@ const Profile = () => {
                 updatedData.profilePicture = imageUrl;
             }
 
-            const response = await fetch(`http://localhost:3000/users/${userData.uid}`, {
+            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${userData.uid}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData),

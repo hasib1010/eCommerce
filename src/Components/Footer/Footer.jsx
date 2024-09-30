@@ -49,7 +49,8 @@ const Footer = () => {
       </div>
       {/* Copyright and Payment Methods */}
       <div style={styles.copyright}>
-        <p>© 2024 Fabyoh.com - All Rights Reserved</p>
+        <p>© 2024 Fabyoh.com - All Rights Reserved</p> 
+        <h3>Developed by <span className='text-blue-500 hover:cursor-pointer hover:underline'>BackBencher's Studio (bdCalling IT LTD)</span></h3>
         <div style={styles.paymentIcons}>
           <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" style={styles.icon} />
           <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="American Express" style={styles.icon} />

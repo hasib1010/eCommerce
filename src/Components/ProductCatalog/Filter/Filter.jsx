@@ -36,7 +36,7 @@ const Filter = () => {
     const fetchProducts = async () => {
         setLoading(true); // Start loading
         try {
-            const res = await fetch("http://localhost:3000/products/clothings");
+            const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings");
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             setAllProducts(data.products);
@@ -55,7 +55,7 @@ const Filter = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("http://localhost:3000/products/clothings/categories");
+                const res = await fetch("https://e-commerce-server-alpha.vercel.app/products/clothings/categories");
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setCategories(data.categories);
