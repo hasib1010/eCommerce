@@ -22,7 +22,7 @@ const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { state } = useCart();
-    
+
     const cartRef = useRef(null);
     const dropdownRef = useRef(null);
     const menuRef = useRef(null);
@@ -80,7 +80,7 @@ const NavBar = () => {
     const handleDropdownOptionClick = () => {
         setIsDropdownOpen(false);
     };
- 
+
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -262,13 +262,13 @@ const NavBar = () => {
                     {filteredProducts.length > 0 && (
                         <div className="absolute bg-white text-black shadow-lg mt-2 lg:top-36 top-48 rounded-lg z-50 w-full max-w-md">
                             {filteredProducts.map(product => (
-                                <div 
-                                    key={product.id} 
-                                    className="p-2 border-b last:border-b-0 hover:bg-gray-200 cursor-pointer"
+                                <Link
+                                    key={product.id}
+                                    className="flex flex-col w-full p-2 border-b last:border-b-0 hover:bg-gray-200 cursor-pointer"
                                     onClick={() => handleProductClick(product._id)}
                                 >
                                     <Link to={`/product/${product._id}`}>{product.name}</Link>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     )}

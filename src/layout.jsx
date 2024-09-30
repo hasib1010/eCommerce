@@ -9,8 +9,7 @@ const Layout = () => {
     const location = useLocation();
     const lenis = useLenis();
 
-    useEffect(() => {
-        // Scroll to top on route change
+    useEffect(() => { 
         if (lenis) {
             lenis.scrollTo(0, { duration: 0.9 });
         }
