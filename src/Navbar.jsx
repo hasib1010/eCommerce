@@ -80,15 +80,14 @@ const NavBar = () => {
     const handleDropdownOptionClick = () => {
         setIsDropdownOpen(false);
     };
+ 
+    const [products, setProducts] = useState([])
 
-    // Simulated product data for demonstration
-    const products = [
-        { id: 1, name: "T-Shirt" },
-        { id: 2, name: "Jeans" },
-        { id: 3, name: "Jacket" },
-        { id: 4, name: "Sneakers" },
-        // Add more products as needed
-    ];
+    useEffect(()=>{
+fetch("https://e-commerce-server-alpha.vercel.app/products/clothings")
+.then(res=> res.json())
+.then(data=> setProducts(data.products))
+    },[])
 
     // Handle search input changes
     const handleSearchChange = (event) => {
@@ -103,8 +102,7 @@ const NavBar = () => {
     const handleSearchSubmit = (event) => {
         event.preventDefault();
         // Navigate to search results page or display filtered products
-        console.log('Search results:', filteredProducts);
-        // Reset search term after submit if needed
+        console.log('Search results:', filteredProducts); 
         setSearchTerm('');
     };
 
@@ -175,7 +173,7 @@ const NavBar = () => {
                 {/* User Options */}
                 <div className='flex-1 items-center justify-end gap-4 hidden lg:flex'>
                     <IoMdSearch onClick={toggleSearch} className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
-                    <IoLanguageSharp className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' />
+                    {/* <IoLanguageSharp className='text-3xl cursor-pointer hover:text-yellow-300 transition-colors' /> */}
                     {user ? (
                         <div className='relative flex items-center gap-2 dropdown' ref={dropdownRef}>
                             <div onClick={handleAvatarClick}>
@@ -247,7 +245,7 @@ const NavBar = () => {
                     <form onSubmit={handleSearchSubmit} className='flex items-center w-full max-w-md'>
                         <input
                             placeholder='What are you looking for...'
-                            className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            className='flex-1 px-4 py-2 border border-gray-300 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
                             type="text"
                             value={searchTerm}
                             onChange={handleSearchChange}

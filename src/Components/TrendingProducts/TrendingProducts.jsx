@@ -37,12 +37,12 @@ const TrendingProducts = () => {
     }
 
     return (
-        <div className='mt-10'>
+        <div className='mt-10 '>
             <h5 className='text-center text-5xl my-5'>Trending Products</h5>
-            <Marquee pauseOnHover={true}>
+            <Marquee  className='h-60' pauseOnHover={true}>
                 {trendingProducts.length > 0 ? (
                     trendingProducts.map(product => <Link to={`/product/${product._id}`} key={product._id} >
-                        <div className='transition ease-in-out delay-150  py-10 mr-20 hover:-translate-y-1 hover:scale-110  duration-300  flex items-center '>
+                        <div className='transition ease-in-out delay-150  py-10 mr-20 hover:-translate-y-1 hover:scale-110    duration-300  flex items-center '>
                             <img className='h-20 rounded-full' src={product?.hoverImageUrl} alt="" />
                             <span className="mx-4">
                                 {product?.name}
