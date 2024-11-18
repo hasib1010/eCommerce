@@ -15,7 +15,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`https://e-commerce-server-alpha.vercel.app/products/clothings/${id}`);
+        const res = await fetch(`http://localhost:3000/products/clothings/${id}`);
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         setProduct(data);

@@ -11,7 +11,7 @@ const TrendingProducts = () => {
     useEffect(() => {
         const fetchTrendingProducts = async () => {
             try {
-                const response = await fetch('https://e-commerce-server-alpha.vercel.app/products/clothings');
+                const response = await fetch('http://localhost:3000/products/clothings');
                 if (!response.ok) throw new Error('Failed to fetch products');
 
                 const data = await response.json(); 

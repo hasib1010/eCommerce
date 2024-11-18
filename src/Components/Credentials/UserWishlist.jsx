@@ -13,7 +13,7 @@ const UserWishlist = ({ wishList }) => {
         const fetchProducts = async () => {
             try {
                 const productFetches = wishList.map(id =>
-                    fetch(`https://e-commerce-server-alpha.vercel.app/products/clothings/${id}`).then(res => {
+                    fetch(`http://localhost:3000/products/clothings/${id}`).then(res => {
                         if (!res.ok) throw new Error('Failed to fetch product data');
                         return res.json();
                     })
@@ -49,7 +49,7 @@ const UserWishlist = ({ wishList }) => {
     const updateWishlist = async (id, updatedWishlist) => {
         const dataToSubmit = { wishList: updatedWishlist };
         try {
-            const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${id}`, {
+            const response = await fetch(`http://localhost:3000/users/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSubmit)

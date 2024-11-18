@@ -21,7 +21,7 @@ const SuccessPage = () => {
       }
 
       try {
-        const response = await fetch(`https://e-commerce-server-alpha.vercel.app/order/${sessionId}`);
+        const response = await fetch(`http://localhost:3000/order/${sessionId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch order details');
         }

@@ -14,7 +14,7 @@ export default function VerticalTabs() {
         const fetchUserData = async () => {
             if (user && user.uid) {
                 try {
-                    const response = await fetch(`https://e-commerce-server-alpha.vercel.app/users/${user.uid}`);
+                    const response = await fetch(`http://localhost:3000/users/${user.uid}`);
                     if (!response.ok) throw new Error('Failed to fetch user data');
                     const data = await response.json();
                     setUserData(data);
